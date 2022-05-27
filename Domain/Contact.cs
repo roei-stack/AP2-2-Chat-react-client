@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
-    internal class Contact
+    public class Contact
     {
         [Key]
         [Required]

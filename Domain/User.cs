@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
-    internal class User
+    public class User
     {
         [Key]
         [Required]

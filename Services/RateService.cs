@@ -1,7 +1,6 @@
-﻿
-using BorisWeb.Models;
+﻿using Domain;
 
-namespace BorisWeb.Services 
+namespace BorisWeb.Services
 {
     public class RateService
     {
