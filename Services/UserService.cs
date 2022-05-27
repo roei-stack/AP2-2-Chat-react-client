@@ -10,7 +10,17 @@ namespace Services
     internal class UserService
     {
         private static List<User> Users = new List<User>();
+        
+        // return the user with the given username
+        public User Get(string username)
+        {
+            return Users.Find(x => x.Username == username);
+        }
 
+        public void Create(string username, string password, string nickname)
+        {
+            User user = new User() { Username = username, Password = password, Nickname = nickname };
 
+        }
     }
 }

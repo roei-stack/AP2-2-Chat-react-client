@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Domain
+namespace BorisWeb.Models
 {
     public class Rate
     {
@@ -17,6 +17,6 @@ namespace Domain
         [MaxLength(128)]
         public string Feedback { get; set; }
 
-        public DateTime date { get; set; } = DateTime.Now;
+        public DateTime date { get; set;} = DateTime.Now;
     }
 }
