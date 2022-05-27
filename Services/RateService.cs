@@ -3,7 +3,7 @@ using BorisWeb.Models;
 
 namespace BorisWeb.Services 
 {
-    public class RateService 
+    public class RateService
     {
 
         private static List<Rate> rates = new List<Rate>();
