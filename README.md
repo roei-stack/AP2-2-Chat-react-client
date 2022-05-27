@@ -1,4 +1,4 @@
-# Advanced Programming 2 - ex1
+# Advanced Programming 2 - ex2
 ### Authors:
 
 **Roei Cohen, Eithan Rospsha**
