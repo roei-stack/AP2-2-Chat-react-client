@@ -91,32 +91,93 @@ namespace BorisKnowsAllApi.Controllers
             var user = service.Get(username);
             if (user == null)
             {
+                Response.StatusCode = 404;
+                return null;
+            }
+            Contact contact = user.GetContact(id);
+            if (contact == null)
+            {
+                Response.StatusCode = 404;
                 return null;
             }
             return user.GetContact(id);
         }
-        /*
+        
+        
         [HttpPut("{id}")]
-        public void EditContact(string id)
+        public void EditContact(string id, [FromBody] Contact contact)
         {
+            // update the contact
+            var username = HttpContext.Session.GetString("username");
+            var user = service.Get(username);
+            if (user == null)
+            {
+                Response.StatusCode = 304;
+                return;
+            }
 
+            Contact c = user.GetContact(id);
+            if (c == null)
+            {
+                Response.StatusCode = 304;
+                return;
+            }
+            // modify contact
+            c.name = contact.name;
+            c.server = contact.server;
         }
 
         [HttpDelete("{id}")]
         public void DeleteContact(string id)
         {
-
+            var username = HttpContext.Session.GetString("username");
+            var user = service.Get(username);
+            if (user == null)
+            {
+                Response.StatusCode = 304;
+                return;
+            }
+            if (user.GetContact(id) == null)
+            {
+                Response.StatusCode = 304;
+                return;
+            }
+            user.DeleteContact(id);
         }
 
-
+        
         // GET api/contacts/:id/messages
-        [HttpGet(Name = "{id}/messages")]
+        [HttpGet("{id}/messages")]
         public IEnumerable<Message> GetContactMessages(string id)
         {
+            service.Get("1").GetContact("2").SendMessage( 
+                new Message() {
+                    id = 1,
+                    sent = true,
+                    contect = "hi how r ya",
+                    created = DateTime.Now 
+                });
+
+            var username = HttpContext.Session.GetString("username");
+            var user = service.Get(username);
+            if (user == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+
+            var contact = user.GetContact(id);
+            if (contact == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+
             //return messages of the 'id' contact
-            return null;
+            return contact.GetAllMessages();
         }
 
+        /*
         // POST api/contacts/:id/messages
         [HttpPost(Name = "{id}/messages")]
         public void PostContactMessage(string id)
