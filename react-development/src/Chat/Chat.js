@@ -12,6 +12,9 @@ function Chat() {
     const { state } = useLocation();
     var user = searchUser(state.username);
 
+    let username = state.username;
+    let password = state.password;
+
     const [activeContact, setActiveContact] = useState(null);
     const [reload, setReload] = useState(false);
     const reloadPage = () => setReload(!reload);

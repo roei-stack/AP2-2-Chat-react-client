@@ -18,11 +18,28 @@ function Signup() {
   const [urlImage, setUrlImage] = useState("");
   const navigate = useNavigate();
 
+  const signupRemote = async () => {
+    const response = await fetch('https://localhost:7007/api/Users/Signup', {
+      method: 'POST',
+      body: JSON.stringify({
+        username: username,
+        password: password,
+        nickname: nickname
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      }
+    })
+    const data = await response.json();
+    return data.statusCode === 200;
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors(validate());
     setIsSubmit(true);
   };
+
 
   useEffect(() => {
     if (Object.keys(errors).length === 0 && isSubmit) {
@@ -50,7 +67,7 @@ function Signup() {
     }
     if (Object.keys(errors).length === 0) {
       // get authentication from remote
-      if (!attemptSignUp(username, password, nickname, urlImage)) {
+      if (!signupRemote() || !attemptSignUp(username, password, nickname, urlImage)) {
         errors.username = "This username already exists!";
       }
     }

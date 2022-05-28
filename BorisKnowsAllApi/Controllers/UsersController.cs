@@ -37,16 +37,16 @@ namespace BorisKnowsAllApi.Controllers
         }
 
         
-        [HttpPost, Route("Signin")]
+        [HttpPost, Route("Signup")]
         public HttpResponseMessage Signup([FromBody] User user)
         {
             if (service.Get(user.Username) != null)
             {
                 return new HttpResponseMessage(HttpStatusCode.NotFound);
             }
+            // maybe HttpContext.Session.SetString("username", null);
             service.Create(user.Username, user.Password, user.Nickname);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
-
     }
 }

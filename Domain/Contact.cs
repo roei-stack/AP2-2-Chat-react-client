@@ -11,7 +11,14 @@ namespace Domain
     {
         [Key]
         [Required]
-        public string ContactUsername { get; set; }
+        public string Id { get; set; }
+
+        // nickname
+        public string Nickname { get; set; }
+
+        // server url
+        public string Server { get; set;}
+
         private ICollection<Message> Messages { get; set; } = new List<Message>();
 
         public void SendMessage(Message message)

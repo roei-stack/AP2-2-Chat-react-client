@@ -1,6 +1,7 @@
 ﻿using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Services;
+using System.Net;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,18 +20,67 @@ namespace BorisKnowsAllApi.Controllers
         }
         
         // GET: api/contacts/
+        // returns a list of the connected user's contacts
         [HttpGet]
         public IEnumerable<Contact> GetAll()
         {
-            // get username of connected user
-            return Enumerable.Empty<Contact>();
+            var username = HttpContext.Session.GetString("username");
+            if (username == null)
+            { 
+                return Enumerable.Empty<Contact>(); 
+            }
+            var user = service.Get(username);
+            if (user == null)
+            {
+                return Enumerable.Empty<Contact>();
+            }
+            return user.GetContacts();
         }
         
         // POST: api/contacts/
+        // adds a new contact
         [HttpPost]
-        public void Create([Bind("username")] string contactUsername)
+        public HttpResponseMessage Create([FromBody] Contact contact)
         {
-            
+            HttpResponseMessage response = new HttpResponseMessage();
+            response.StatusCode = HttpStatusCode.NotModified;
+            var username = HttpContext.Session.GetString("username");
+            if (username == null)
+            {
+                response.ReasonPhrase = "Please no hakk";
+                return response;
+            }
+            var user = service.Get(username);
+            if (user == null)
+            {
+                response.ReasonPhrase = "How the fuck did you even get here?";
+                return response;
+            }
+
+            // you cant add yourself as a user
+            if (username == contact.Id)
+            {
+                response.ReasonPhrase = "No friends?";
+                return response;
+            }
+
+            // check if contact is not a real user
+            if (service.Get(contact.Id) == null)
+            {
+                response.ReasonPhrase = "The contact does not exist";
+                return response;
+            }
+
+            // check if contact already exists
+            if (user.GetContact(contact.Id) != null)
+            {
+                response.ReasonPhrase = "This contact is already registered";
+                return response;
+            }
+
+            user.AddContact(contact.Id, contact.Nickname, contact.Server);
+            response.StatusCode = HttpStatusCode.Created;
+            return response;
         }
         /*
         // GET api/contacts/:id

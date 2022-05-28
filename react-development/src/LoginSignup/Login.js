@@ -12,6 +12,22 @@ function Login() {
   const [isSubmit, setIsSubmit] = useState(false);
   const navigate = useNavigate();
 
+  const loginRemote = async () => {
+    const response = await fetch('https://localhost:7007/api/Users/Login', {
+      method: 'POST',
+      body: JSON.stringify({
+        username: username,
+        password: password,
+        nickname: ''
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      }
+    })
+    const data = await response.json();
+    return data.statusCode === 200;
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors(validate());
@@ -20,7 +36,7 @@ function Login() {
 
   useEffect(() => {
     if (Object.keys(errors).length === 0 && isSubmit) {
-      navigate('/chat', { state: { username: username} });
+      navigate('/chat', { state: { username: username, password: password} });
     }
   }, [errors])
 
@@ -35,7 +51,7 @@ function Login() {
       errors.password = "Password must be non empty and contain a character and a letter!";
     }
     if (Object.keys(errors).length === 0) {
-      if (!auth(username, password)) {
+      if (!loginRemote() || !auth(username, password)) {
         errors.password = "Sorry, username and/or password do not exist!";
       }
     }
