@@ -66,5 +66,10 @@ body {
 }
 
 .style-zero {
-    text-decoration : none
+    text-decoration : none;
+}
+
+.page-center {
+    position: fixed;
+    top: 50%;
 }
