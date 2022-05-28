@@ -11,7 +11,6 @@ namespace Services
     {
         private static List<User> Users = new List<User>();
         
-        // return the user with the given username
         public User Get(string username)
         {
             return Users.Find(x => x.Username == username);
@@ -19,8 +18,19 @@ namespace Services
 
         public void Create(string username, string password, string nickname)
         {
-            User user = new User() { Username = username, Password = password, Nickname = nickname };
+            if (Get(username) != null)
+            {
+                return;
+            }
 
+            User user = new User()
+            {
+                Username = username,
+                Password = password,
+                Nickname = nickname,
+                Contacts = new List<Contact>()
+            };
+            Users.Add(user);
         }
     }
 }
