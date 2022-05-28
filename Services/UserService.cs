@@ -31,5 +31,10 @@ namespace Services
             };
             Users.Add(user);
         }
+
+        public bool IsEmpty()
+        {
+            return Users.Count == 0;
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace Domain
             return Contacts.Find(x => x.ContactUsername == contactUsername);
         }
 
-        public ICollection<Contact> GetContacts()
+        public IEnumerable<Contact> GetContacts()
         {
             return Contacts;
         }

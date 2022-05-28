@@ -58,8 +58,16 @@ namespace BorisWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                service.Create(rate.Name, rate.Rating, rate.Feedback);
-                return RedirectToAction(nameof(Index));
+                var u = service.Get(rate.Name);
+                if (u != null)
+                {
+                    ViewData["Error"] = "This name already exists";
+                }
+                else
+                {
+                    service.Create(rate.Name, rate.Rating, rate.Feedback);
+                    return RedirectToAction(nameof(Index));
+                }
             }
             return View(rate);
         }
