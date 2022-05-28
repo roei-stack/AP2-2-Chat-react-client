@@ -4,50 +4,44 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Welcome to BorisChats rate page</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rating)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Feedback)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rating)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Feedback)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Name">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Name">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Name">Delete</a>
-            </td>
-        </tr>
+
+@foreach (var item in Model)
+{
+    <div class="blank-size container d-flex justify-content-center align-items-center">
+        <div class="card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="name-size">
+                    @item.Name
+                </div>
+                <div class="ratings">
+                    @for (int x = 0; x < @item.Rating; x++)
+                    {
+                        <i class="fa fa-star rating-color"></i>
+                    }
+                    @for (int x = 0; x < 5 - @item.Rating; x++)
+                    {
+                        <i class="fa fa-star"></i>
+                    }                   
+                </div>
+            </div>
+            <div class="review-size">
+                @item.Feedback
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="date-size">
+                    @item.Date
+                </div>
+                <div>
+                    <a asp-action="Edit" asp-route-id="@item.Name">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Name">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Name">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
 }
-    </tbody>
-</table>

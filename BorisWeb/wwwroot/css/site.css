@@ -16,3 +16,52 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+separationLine {
+    color : grey
+}
+
+body {
+    background-color: #eef3f4;
+}
+
+.blank-size {
+    margin-top: 10px;
+}
+
+.card {
+    width: 100%;
+    border: none;
+    /*height: 280px;*/
+}
+
+.ratings {
+    margin-right: 10px;
+}
+
+    .ratings i {
+        color: #cecece;
+        font-size: 32px;
+    }
+
+.rating-color {
+    color: #fbc634 !important;
+}
+
+.name-size {
+    font-weight: 600;
+    font-size: 26px;
+    margin-bottom: 5px;
+}
+
+.review-size {
+    font-weight: 500;
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.date-size {
+    font-weight: 400;
+    font-size: 20px;
+    margin-bottom: 5px;
+}
