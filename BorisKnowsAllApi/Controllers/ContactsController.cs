@@ -22,17 +22,17 @@ namespace BorisKnowsAllApi.Controllers
         // GET: api/contacts/
         // returns a list of the connected user's contacts
         [HttpGet]
-        public IEnumerable<Contact> GetAll()
+        public IEnumerable<String[]> GetAll()
         {
             var username = HttpContext.Session.GetString("username");
             if (username == null)
             { 
-                return Enumerable.Empty<Contact>(); 
+                return Enumerable.Empty<String[]>(); 
             }
             var user = service.Get(username);
             if (user == null)
             {
-                return Enumerable.Empty<Contact>();
+                return Enumerable.Empty<String[]>();
             }
             return user.GetContactsJson();
         }

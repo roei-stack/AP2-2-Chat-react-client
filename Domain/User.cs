@@ -43,11 +43,11 @@ namespace Domain
             foreach (var contact in Contacts) 
             {
                 list.Add(new string[] {
-                    $"\"id\":\"{contact.Id}\",",
-                    $"\"name\":\"{contact.Nickname}\",",
-                    $"\"server\":\"{contact.Server}\",",
-                    $"\"last\":\"{contact.GetLastMessage().Text}\",",
-                    $"\"lastdate\":\"{contact.GetLastMessage().Time}\","
+                    $"id:{contact.Id},",
+                    $"name:{contact.Nickname},",
+                    $"server:{contact.Server},",
+                    $"last:{"abc"},",
+                    $"lastdate:{"def"},"
                 });
             }
             return list;
