@@ -17,17 +17,17 @@ namespace Domain
         public string Nickname { get; set; }
         private List<Contact> Contacts { get; set; } = new List<Contact>();
 
-        public void AddContact(string id, string nickname, string server)
+        public void AddContact(string id, string name, string server)
         {
-            this.Contacts.Add(new Contact { Id = id, Nickname = nickname, Server = server});
+            this.Contacts.Add(new Contact { id = id, name = name, server = server});
         }
 
         public Contact GetContact(string contactUsername)
         {
-            return Contacts.Find(x => x.Id == contactUsername);
+            return Contacts.Find(x => x.id == contactUsername);
         }
 
-        public IEnumerable<Contact> GetContacts()
+        public List<Contact> GetContacts()
         {
             return Contacts;
         }

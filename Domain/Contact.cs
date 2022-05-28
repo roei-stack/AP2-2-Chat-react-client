@@ -11,13 +11,16 @@ namespace Domain
     {
         [Key]
         [Required]
-        public string Id { get; set; }
+        public string id { get; set; }
 
         // nickname
-        public string Nickname { get; set; }
+        public string name { get; set; }
 
         // server url
-        public string Server { get; set;}
+        public string server { get; set;}
+
+        public string last { get; set; } = null;
+        public string lastdate { get; set; } = null;
 
         public string LastMessage { get; set; } = "";
 
@@ -28,6 +31,8 @@ namespace Domain
         public void SendMessage(Message message)
         {
             Messages.Add(message);
+            last = message.Text;
+            lastdate = message.Time.ToString();
         }
 
         public Message GetLastMessage()
