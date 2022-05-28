@@ -7,7 +7,7 @@ using Domain;
 
 namespace Services
 {
-    internal class UserService
+    public class UserService
     {
         private static List<User> Users = new List<User>();
         
@@ -27,8 +27,7 @@ namespace Services
             {
                 Username = username,
                 Password = password,
-                Nickname = nickname,
-                Contacts = new List<Contact>()
+                Nickname = nickname
             };
             Users.Add(user);
         }

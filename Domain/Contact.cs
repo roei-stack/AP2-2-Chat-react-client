@@ -12,6 +12,37 @@ namespace Domain
         [Key]
         [Required]
         public string ContactUsername { get; set; }
-        public ICollection<Message> Messages { get; set; } = new List<Message>();
-    }
+        private ICollection<Message> Messages { get; set; } = new List<Message>();
+
+        public void SendMessage(Message message)
+        {
+            Messages.Add(message);
+        }
+
+        public Message GetLastMessage()
+        {
+            if (Messages.Count == 0)
+            {
+                return null;
+            }
+            return Messages.Last();
+        }
+
+        public Message GetMessage(int messageId)
+        {
+            foreach (Message message in Messages)
+            {
+                if (message.MessageId == messageId)
+                {
+                    return message;
+                }
+            }
+            return null;
+        }
+
+        public ICollection<Message> GetAllMessages()
+        {
+            return Messages;
+        }
+    }   
 }
