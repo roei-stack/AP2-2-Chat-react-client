@@ -7,15 +7,20 @@
 <h1>Welcome to BorisChats rate page</h1>
 
 <h4>
-    <a class="style-zero" asp-action="Create">Click here to crate a new rate</a>
+    <a class="style-zero" asp-action="Create">Click here to create a new rate</a>
     <br />
     The average now is: @ViewBag.average
 </h4>
 
-<form asp-action="Index">
-    <input name="text" id="search" />
-    <input type="submit" value="Search" />
-</form>
+<div class="d-flex justify-content-between align-items-center">
+    <form asp-action="Index">
+        <input name="text" id="search" />
+        <input type="submit" value="Search" />
+    </form>
+    <a class="style-zero" asp-action="Index">
+        <i class="bi bi-house name-size"></i>
+    </a>
+</div>
 
 @if (ViewBag.empty == "empty")
 {
