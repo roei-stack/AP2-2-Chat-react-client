@@ -23,14 +23,24 @@ namespace BorisWeb.Controllers
         // GET: Rates
         public IActionResult Index()
         {
+            ViewData["average"] = "There are no rates yet";
+            if (0 != service.GetAll().Count)
+            {
+                ViewData["average"] = service.GetAverage();
+            }
             return View(service.GetAll());
         }
 
         [HttpPost]
         public IActionResult Index(string text = null)
         {
+            ViewData["average"] = "There are no rates yet";
             if (null == text)
             {
+                if (0 != service.GetAll().Count)
+                {
+                    ViewData["average"] = service.GetAverage();
+                }
                 return View(service.GetAll());
             }
             IEnumerable<Rate> rates = from   rate in service.GetAll()
@@ -39,7 +49,12 @@ namespace BorisWeb.Controllers
                                       select rate;
             if (rates.Count() == 0)
             {
+                ViewData["average"] = "0 rates for your search, no average";
                 ViewData["empty"] = "empty";
+            }
+            else
+            {
+                ViewData["average"] = service.GetAverage(rates);
             }
             return View(rates);
         }

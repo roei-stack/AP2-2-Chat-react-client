@@ -36,5 +36,20 @@ namespace BorisWeb.Services
         public void Delete(string Name) {
             rates.Remove(Get(Name));
         }
+        public double GetAverage()
+        {
+            return GetAverage(GetAll());
+        }
+
+        public double GetAverage(IEnumerable<Rate> rates)
+        {
+            double average = 0;
+            foreach (Rate rate in rates)
+            {
+                average += rate.Rating;
+            }
+            average /= rates.Count();
+            return Math.Round(average, 1);
+        }
     }
 }
