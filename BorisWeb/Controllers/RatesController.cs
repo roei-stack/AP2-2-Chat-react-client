@@ -23,7 +23,25 @@ namespace BorisWeb.Controllers
         // GET: Rates
         public IActionResult Index()
         {
-              return View(service.GetAll());
+            return View(service.GetAll());
+        }
+
+        [HttpPost]
+        public IActionResult Index(string text = null)
+        {
+            if (null == text)
+            {
+                return View(service.GetAll());
+            }
+            IEnumerable<Rate> rates = from   rate in service.GetAll()
+                                      where  rate.Name.Contains(text) ||
+                                             rate.Feedback.Contains(text)
+                                      select rate;
+            if (rates.Count() == 0)
+            {
+                ViewData["empty"] = "empty";
+            }
+            return View(rates);
         }
 
         // GET: Rates/Details/bob
@@ -150,5 +168,6 @@ namespace BorisWeb.Controllers
             //await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
     }
 }
