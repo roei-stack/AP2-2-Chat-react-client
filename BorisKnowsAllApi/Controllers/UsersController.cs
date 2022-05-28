@@ -44,6 +44,7 @@ namespace BorisKnowsAllApi.Controllers
             {
                 return new HttpResponseMessage(HttpStatusCode.NotFound);
             }
+            // maybe HttpContext.Session.SetString("username", null);
             service.Create(user.Username, user.Password, user.Nickname);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }

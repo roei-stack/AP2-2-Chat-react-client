@@ -36,7 +36,7 @@ function Login() {
 
   useEffect(() => {
     if (Object.keys(errors).length === 0 && isSubmit) {
-      navigate('/chat', { state: { username: username} });
+      navigate('/chat', { state: { username: username, password: password} });
     }
   }, [errors])
 
