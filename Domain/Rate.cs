@@ -6,7 +6,7 @@ namespace BorisWeb.Models
     {
         [Key]
         [Required]
-        public string Username { get; set; }
+        public string Name { get; set; }
 
         [Required]
         [Range(1, 5)]
@@ -17,6 +17,6 @@ namespace BorisWeb.Models
         [MaxLength(128)]
         public string Feedback { get; set; }
 
-        public DateTime date { get; set;} = DateTime.Now;
+        public DateTime Date { get; set;} = DateTime.Now;
     }
 }
