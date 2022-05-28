@@ -22,6 +22,10 @@ namespace Domain
         public string last { get; set; } = null;
         public string lastdate { get; set; } = null;
 
+        public string LastMessage { get; set; } = "";
+
+        public string lastDate { get; set; } = "";
+
         private ICollection<Message> Messages { get; set; } = new List<Message>();
 
         public void SendMessage(Message message)
