@@ -36,5 +36,21 @@ namespace Domain
         {
             Contacts.Remove(GetContact(contactUsername));
         }
+
+        public List<string[]> GetContactsJson()
+        {
+            var list = new List<string[]>();
+            foreach (var contact in Contacts) 
+            {
+                list.Add(new string[] {
+                    $"\"id\":\"{contact.Id}\",",
+                    $"\"name\":\"{contact.Nickname}\",",
+                    $"\"server\":\"{contact.Server}\",",
+                    $"\"last\":\"{contact.GetLastMessage().Text}\",",
+                    $"\"lastdate\":\"{contact.GetLastMessage().Time}\","
+                });
+            }
+            return list;
+        }
     }
 }

@@ -43,6 +43,12 @@ namespace BorisWeb.Controllers
             return View(rate);
         }
 
+        public IActionResult Search(string query)
+        {
+            var rates = service.GetAll().Where(rate => rate.Name.Contains(query));
+            return Json(rates);
+        }
+
         // GET: Rates/Create
         public IActionResult Create()
         {

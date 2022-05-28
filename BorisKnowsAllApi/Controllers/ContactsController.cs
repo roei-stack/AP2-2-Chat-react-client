@@ -34,7 +34,7 @@ namespace BorisKnowsAllApi.Controllers
             {
                 return Enumerable.Empty<Contact>();
             }
-            return user.GetContacts();
+            return user.GetContactsJson();
         }
         
         // POST: api/contacts/
