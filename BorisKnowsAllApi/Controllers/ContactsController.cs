@@ -82,15 +82,20 @@ namespace BorisKnowsAllApi.Controllers
             response.StatusCode = HttpStatusCode.Created;
             return response;
         }
-        /*
+        
         // GET api/contacts/:id
         [HttpGet("{id}")]
         public Contact GetContact(string id)
         {
-            //return details of the 'id' contact
-            return null;
+            var username = HttpContext.Session.GetString("username");
+            var user = service.Get(username);
+            if (user == null)
+            {
+                return null;
+            }
+            return user.GetContact(id);
         }
-
+        /*
         [HttpPut("{id}")]
         public void EditContact(string id)
         {
