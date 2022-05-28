@@ -22,17 +22,13 @@ namespace Domain
         public string last { get; set; } = null;
         public string lastdate { get; set; } = null;
 
-        public string LastMessage { get; set; } = "";
-
-        public string lastDate { get; set; } = "";
-
         private ICollection<Message> Messages { get; set; } = new List<Message>();
 
         public void SendMessage(Message message)
         {
             Messages.Add(message);
-            last = message.Text;
-            lastdate = message.Time.ToString();
+            last = message.contect;
+            lastdate = message.contect.ToString();
         }
 
         public Message GetLastMessage()
@@ -48,7 +44,7 @@ namespace Domain
         {
             foreach (Message message in Messages)
             {
-                if (message.MessageId == messageId)
+                if (message.id == messageId)
                 {
                     return message;
                 }

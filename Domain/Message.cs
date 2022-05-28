@@ -10,10 +10,10 @@ namespace Domain
     public class Message
     {
         [Key]
-        public int MessageId { get; set; }
-        public string Text { get; set; }
+        public int id { get; set; }
+        public string contect { get; set; }
         // true if called from the sender, false otherwise
-        public bool IsSender { get; set; }
-        public DateTime Time { get; set; } = DateTime.Now;
+        public bool sent { get; set; }
+        public DateTime created { get; set; } = DateTime.Now;
     }
 }
