@@ -15,7 +15,7 @@ namespace Domain
         [Required]
         public string Password { get; set; }
         public string Nickname { get; set; }
-        private ICollection<Contact> Contacts { get; set; } = new List<Contact>();
+        private List<Contact> Contacts { get; set; } = new List<Contact>();
 
         public void AddContact(string contactUsername)
         {
@@ -24,14 +24,7 @@ namespace Domain
 
         public Contact GetContact(string contactUsername)
         {
-            foreach (Contact contact in Contacts)
-            {
-                if (contact.ContactUsername == contactUsername)
-                {
-                    return contact;
-                }
-            }
-            return null;
+            return Contacts.Find(x => x.ContactUsername == contactUsername);
         }
 
         public ICollection<Contact> GetContacts()
