@@ -22,19 +22,19 @@ namespace BorisKnowsAllApi.Controllers
         // GET: api/contacts/
         // returns a list of the connected user's contacts
         [HttpGet]
-        public IEnumerable<String[]> GetAll()
+        public IEnumerable<Contact> GetAll()
         {
             var username = HttpContext.Session.GetString("username");
             if (username == null)
             { 
-                return Enumerable.Empty<String[]>(); 
+                return Enumerable.Empty<Contact>(); 
             }
             var user = service.Get(username);
             if (user == null)
             {
-                return Enumerable.Empty<String[]>();
+                return Enumerable.Empty<Contact>();
             }
-            return user.GetContactsJson();
+            return user.GetContacts();
         }
         
         // POST: api/contacts/
@@ -58,27 +58,27 @@ namespace BorisKnowsAllApi.Controllers
             }
 
             // you cant add yourself as a user
-            if (username == contact.Id)
+            if (username == contact.id)
             {
                 response.ReasonPhrase = "No friends?";
                 return response;
             }
 
             // check if contact is not a real user
-            if (service.Get(contact.Id) == null)
+            if (service.Get(contact.id) == null)
             {
                 response.ReasonPhrase = "The contact does not exist";
                 return response;
             }
 
             // check if contact already exists
-            if (user.GetContact(contact.Id) != null)
+            if (user.GetContact(contact.id) != null)
             {
                 response.ReasonPhrase = "This contact is already registered";
                 return response;
             }
 
-            user.AddContact(contact.Id, contact.Nickname, contact.Server);
+            user.AddContact(contact.id, contact.name, contact.server);
             response.StatusCode = HttpStatusCode.Created;
             return response;
         }

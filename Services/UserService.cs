@@ -9,11 +9,17 @@ namespace Services
 {
     public class UserService
     {
-        private static List<User> Users = new List<User>();
+        private static List<User> users = new List<User>()
+        {
+            new User() { Username = "1", Password = "a1", Nickname = "bob"},
+            new User() { Username = "2", Password = "a1", Nickname = "robi"},
+            new User() { Username = "3", Password = "a1", Nickname = "shimi"},
+        };
         
+
         public User Get(string username)
         {
-            return Users.Find(x => x.Username == username);
+            return users.Find(x => x.Username == username);
         }
 
         public void Create(string username, string password, string nickname)
@@ -29,12 +35,12 @@ namespace Services
                 Password = password,
                 Nickname = nickname
             };
-            Users.Add(user);
+            users.Add(user);
         }
 
         public bool IsEmpty()
         {
-            return Users.Count == 0;
+            return users.Count == 0;
         }
     }
 }
