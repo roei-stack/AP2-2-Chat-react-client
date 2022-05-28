@@ -4,39 +4,44 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>More info? joke on you</h1>
 
-<div>
-    <h4>Rate</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Rating)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Rating)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Feedback)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Feedback)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Name">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="blank-size container d-flex justify-content-center align-items-center">
+    <div class="card p-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="name-size">
+                @Model.Name
+            </div>
+            <div class="ratings">
+                @for (int x = 0; x < @Model.Rating; x++)
+                {
+                    <i class="fa fa-star rating-color"></i>
+                }
+                @for (int x = 0; x < 5 - @Model.Rating; x++)
+                {
+                    <i class="fa fa-star"></i>
+                }
+            </div>
+        </div>
+        <div class="review-size">
+            @Model.Feedback
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="date-size">
+                @Model.Date
+            </div>
+            <div>
+                <a class="style-zero" asp-action="Index">
+                    <i class="bi bi-house"></i>
+                </a>
+                <a class="style-zero" asp-action="Edit" asp-route-id="@Model.Name">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                <a class="style-zero" asp-action="Delete" asp-route-id="@Model.Name">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
