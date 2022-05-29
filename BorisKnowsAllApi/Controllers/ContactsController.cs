@@ -253,7 +253,7 @@ namespace BorisKnowsAllApi.Controllers
                 Response.StatusCode = 304;
                 return;
             }
-            message.contect = content;
+            message.content = content;
             Response.StatusCode = 204;
         }
 

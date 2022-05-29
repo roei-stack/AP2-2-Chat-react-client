@@ -30,11 +30,11 @@ namespace Domain
             Message msg = new Message() {
                 id = this.idCounter,
                 sent = sent,
-                contect = content,
+                content = content,
                 created = DateTime.Now
             };
             Messages.Add(msg);
-            last = msg.contect;
+            last = msg.content;
             lastdate = msg.created;
             idCounter++;
         }

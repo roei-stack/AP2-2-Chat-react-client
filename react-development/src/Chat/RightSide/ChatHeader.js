@@ -1,4 +1,4 @@
-function ChatHeader({ otherImage, otherNickname, otherUsername }) {
+function ChatHeader({ otherImage, otherUsername, otherNickname }) {
     return (
         <div className="header">
             <div className="img-with-text">
