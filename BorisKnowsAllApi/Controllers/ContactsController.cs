@@ -11,7 +11,6 @@ namespace BorisKnowsAllApi.Controllers
     [ApiController]
     public class ContactsController : ControllerBase
     {
-
         private readonly UserService service;
 
         public ContactsController()
@@ -26,14 +25,17 @@ namespace BorisKnowsAllApi.Controllers
         {
             var username = HttpContext.Session.GetString("username");
             if (username == null)
-            { 
-                return Enumerable.Empty<Contact>(); 
+            {
+                Response.StatusCode = 404;
+                return null; 
             }
             var user = service.Get(username);
             if (user == null)
             {
-                return Enumerable.Empty<Contact>();
+                Response.StatusCode = 404;
+                return null;
             }
+            Response.StatusCode = 200;
             return user.GetContacts();
         }
         
@@ -64,14 +66,15 @@ namespace BorisKnowsAllApi.Controllers
                 return response;
             }
 
+            /*
+             * contact does not have to be from this server
             // check if contact is not a real user
             var c = service.Get(contact.id);
             if (c == null)
             {
                 response.ReasonPhrase = "The contact does not exist";
                 return response;
-            }
-
+            }*/
             // check if contact already exists
             if (user.GetContact(contact.id) != null)
             {
@@ -80,9 +83,7 @@ namespace BorisKnowsAllApi.Controllers
             }
 
             user.AddContact(contact.id, contact.name, contact.server);
-            
-
-
+            // todo call invite
             response.StatusCode = HttpStatusCode.Created;
             return response;
         }
@@ -104,6 +105,7 @@ namespace BorisKnowsAllApi.Controllers
                 Response.StatusCode = 404;
                 return null;
             }
+            Response.StatusCode = 200;
             return user.GetContact(id);
         }
         
@@ -129,6 +131,7 @@ namespace BorisKnowsAllApi.Controllers
             // modify contact
             c.name = contact.name;
             c.server = contact.server;
+            Response.StatusCode = 204;
         }
 
         [HttpDelete("{id}")]
@@ -147,6 +150,7 @@ namespace BorisKnowsAllApi.Controllers
                 return;
             }
             user.DeleteContact(id);
+            Response.StatusCode = 204;
         }
 
         
@@ -168,7 +172,7 @@ namespace BorisKnowsAllApi.Controllers
                 Response.StatusCode = 404;
                 return null;
             }
-
+            Response.StatusCode = 200;
             //return messages of the 'id' contact
             return contact.GetAllMessages();
         }
@@ -192,30 +196,61 @@ namespace BorisKnowsAllApi.Controllers
                 Response.StatusCode = 404;
                 return;
             }
-            var date = DateTime.Now;
-            contact.SendMessage(true, contect, date);
-            service.Get(id).GetContact(username).SendMessage(false, contect, date);
-            //*todo//
+            Response.StatusCode = 201;
+            contact.SendMessage(true, contect);
+            // todo call transfer
         }
 
-        /*[HttpGet("{id}/messages/{id2}")]
+
+        [HttpGet("{id}/messages/{id2}")]
         public Message GetMessage(string id, int id2)
         {
-            return null;
+            // return id2 message
+            IEnumerable <Message> list = GetContactMessages(id);
+            if (list == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+            
+            Message message = list.ElementAtOrDefault(id2);
+            if (message == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+            Response.StatusCode = 200;
+            return message;
         }
 
 
         [HttpPut("{id}/messages/{id2}")]
-        public void EditMessage(string id, int id2)
+        public void EditMessage(string id, int id2, [FromBody] string content)
         {
-
+            // update a message
+            Message message = GetMessage(id, id2);
+            if (message == null)
+            {
+                Response.StatusCode = 304;
+                return;
+            }
+            message.contect = content;
+            Response.StatusCode = 204;
         }
 
         [HttpDelete("{id}/messages/{id2}")]
         public void DeleteMessage(string id, int id2)
         {
-
+            // delete the message with that id
+            Message message = GetMessage(id, id2);
+            if (message == null)
+            {
+                Response.StatusCode = 304;
+                return;
+            }
+            service.Get(HttpContext.Session.GetString("username")).
+                GetContact(id).RemoveMessage(id2);
+            Response.StatusCode = 204;
         }
-        */
     }
 }
