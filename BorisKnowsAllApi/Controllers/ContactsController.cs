@@ -65,7 +65,8 @@ namespace BorisKnowsAllApi.Controllers
             }
 
             // check if contact is not a real user
-            if (service.Get(contact.id) == null)
+            var c = service.Get(contact.id);
+            if (c == null)
             {
                 response.ReasonPhrase = "The contact does not exist";
                 return response;
@@ -79,6 +80,9 @@ namespace BorisKnowsAllApi.Controllers
             }
 
             user.AddContact(contact.id, contact.name, contact.server);
+            
+
+
             response.StatusCode = HttpStatusCode.Created;
             return response;
         }
@@ -150,14 +154,6 @@ namespace BorisKnowsAllApi.Controllers
         [HttpGet("{id}/messages")]
         public IEnumerable<Message> GetContactMessages(string id)
         {
-            service.Get("1").GetContact("2").SendMessage( 
-                new Message() {
-                    id = 1,
-                    sent = true,
-                    contect = "hi how r ya",
-                    created = DateTime.Now 
-                });
-
             var username = HttpContext.Session.GetString("username");
             var user = service.Get(username);
             if (user == null)
@@ -177,15 +173,32 @@ namespace BorisKnowsAllApi.Controllers
             return contact.GetAllMessages();
         }
 
-        /*
+        
         // POST api/contacts/:id/messages
-        [HttpPost(Name = "{id}/messages")]
-        public void PostContactMessage(string id)
+        [HttpPost("{id}/messages")]
+        public void PostContactMessage(string id, [FromBody] string contect)
         {
+            var username = HttpContext.Session.GetString("username");
+            var user = service.Get(username);
+            if (user == null)
+            {
+                Response.StatusCode = 404;
+                return;
+            }
 
+            var contact = user.GetContact(id);
+            if (contact == null)
+            {
+                Response.StatusCode = 404;
+                return;
+            }
+            var date = DateTime.Now;
+            contact.SendMessage(true, contect, date);
+            service.Get(id).GetContact(username).SendMessage(false, contect, date);
+            //*todo//
         }
 
-        [HttpGet("{id}/messages/{id2}")]
+        /*[HttpGet("{id}/messages/{id2}")]
         public Message GetMessage(string id, int id2)
         {
             return null;

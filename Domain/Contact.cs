@@ -22,13 +22,22 @@ namespace Domain
         public string last { get; set; } = null;
         public string lastdate { get; set; } = null;
 
+        private int idCounter = 0;
+
         private ICollection<Message> Messages { get; set; } = new List<Message>();
 
-        public void SendMessage(Message message)
+        public void SendMessage(bool sent, string content, DateTime created)
         {
-            Messages.Add(message);
-            last = message.contect;
-            lastdate = message.contect.ToString();
+            Message msg = new Message() {
+                id = this.idCounter,
+                sent = true,
+                contect = "hi how r ya",
+                created = DateTime.Now
+            };
+            Messages.Add(msg);
+            last = msg.contect;
+            lastdate = msg.contect.ToString();
+            idCounter++;
         }
 
         public Message GetLastMessage()
