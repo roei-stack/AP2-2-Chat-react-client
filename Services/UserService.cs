@@ -14,6 +14,7 @@ namespace Services
             new User() { Username = "1", Password = "a1", Nickname = "bob"},
             new User() { Username = "2", Password = "a1", Nickname = "robi"},
             new User() { Username = "3", Password = "a1", Nickname = "shimi"},
+            new User() { Username = "bob", Password = "a1", Nickname = "bob"}
         };
         
 

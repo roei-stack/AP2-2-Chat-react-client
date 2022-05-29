@@ -11,14 +11,18 @@ function Signup() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [nickname, setNickname] = useState(null);
+  const [nickname, setNickname] = useState("");
   const [image, setImage] = useState("");
   const [errors, setErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [urlImage, setUrlImage] = useState("");
   const navigate = useNavigate();
 
+  const [status, setStatus] = useState(0);
   const signupRemote = async () => {
+    if (nickname === "") {
+      setNickname(username)
+    }
     const response = await fetch('https://localhost:7007/api/Users/Signup', {
       method: 'POST',
       body: JSON.stringify({
@@ -27,11 +31,11 @@ function Signup() {
         nickname: nickname
       }),
       headers: {
-        'Content-type': 'application/json; charset=UTF-8'
+        'Content-type': 'application/json'
       }
     })
-    const data = await response.json();
-    return data.statusCode === 200;
+    console.log(response.status);
+    setStatus(response.status)
   }
 
   const handleSubmit = (e) => {
@@ -42,12 +46,14 @@ function Signup() {
 
 
   useEffect(() => {
-    if (Object.keys(errors).length === 0 && isSubmit) {
+    if (status === 200 && Object.keys(errors).length === 0 && isSubmit) {
       navigate('/');
+    } else {
+      errors.username = "This username already exists!";
     }
-  }, [errors])
+  }, [status])
 
-  const validate = () => {
+  const validate = async () => {
     var regexNumber = /\d/g;
     var regexLetter = /[a-zA-Z]/g;
     const errors = {};
@@ -66,8 +72,9 @@ function Signup() {
       errors.image = "This does not look like an image, please try again!";
     }
     if (Object.keys(errors).length === 0) {
+      signupRemote();
       // get authentication from remote
-      if (!signupRemote() || !attemptSignUp(username, password, nickname, urlImage)) {
+      if (!attemptSignUp(username, password, nickname, urlImage)) {
         errors.username = "This username already exists!";
       }
     }

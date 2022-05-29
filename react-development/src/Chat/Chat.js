@@ -1,5 +1,5 @@
 import './Chat.css'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import imageDefault from './images/boris.jpg'
 import LeftSide from './LeftSide/LeftSide';
 import ChatHeader from './RightSide/ChatHeader';
@@ -28,6 +28,22 @@ function Chat() {
         contactImage = activeContact.user.image;
     }
 
+
+    const [listContacts, setListContacts] = useState([]);
+    const fetchContacts = async () => {
+        const response = await fetch('https://localhost:7007/api/contacts/' + username);
+        const data = await response.json();
+        setListContacts(data);
+    }
+    useEffect(() => {
+        fetchContacts();
+        console.log(listContacts);
+    }, [])
+    console.log(listContacts);
+
+
+    // get contacts from remote
+
     /*
         TODO:
         - fix audio css
@@ -37,8 +53,10 @@ function Chat() {
     return (
         <section id="chat" className="container-fluid">
             <div id="chat-page" className="row g-2">
-                <LeftSide user={user} contacts={user.contacts} reload={reloadPage} setActiveContact={setActiveContact} />
-                <div id="right-side" className="col-8 vh-100">
+            
+            <LeftSide username={username} contacts={listContacts} reload={reloadPage} setActiveContact={setActiveContact} />
+                
+            <div id="right-side" className="col-8 vh-100">
                     <ChatHeader otherUsername={contactUsername} otherNickname={contactNickname} otherImage={contactImage} />
                     <MessageList contact={activeContact} />
                     <Inputs user={user} contact={activeContact} reload={reloadPage} />
@@ -49,4 +67,6 @@ function Chat() {
 }
 
 export default Chat;
+
+// <LeftSide user={user} cl={listContacts} contacts={user.contacts} reload={reloadPage} setActiveContact={setActiveContact} />
 

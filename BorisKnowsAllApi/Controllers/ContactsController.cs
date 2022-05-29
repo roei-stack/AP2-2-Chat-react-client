@@ -12,22 +12,18 @@ namespace BorisKnowsAllApi.Controllers
     public class ContactsController : ControllerBase
     {
         private readonly UserService service;
-        private string url;
 
         public ContactsController()
         {
             this.service = new UserService();
-            this.url = string.Format("{0}://{1}",
-                       HttpContext.Request.Scheme, HttpContext.Request.Host);
         }
         
         // GET: api/contacts/
         // returns a list of the connected user's contacts
-        [HttpGet("contacts")]
-        public IEnumerable<Contact> GetAll()
+        [HttpGet("contacts/{username}")]
+        public IEnumerable<Contact> GetAll(string username)
         {
-            var username = HttpContext.Session.GetString("username");
-            if (username == null)
+            if (string.IsNullOrEmpty(username))
             {
                 Response.StatusCode = 404;
                 return null; 
@@ -44,12 +40,13 @@ namespace BorisKnowsAllApi.Controllers
         
         // POST: api/contacts/
         // adds a new contact
-        [HttpPost("contacts")]
-        public void Create([FromBody] Contact contact)
+        [HttpPost("contacts/{username}")]
+        public void Create(string username, [FromBody] Contact contact)
         {
+            string url = string.Format("{0}://{1}",
+                       HttpContext.Request.Scheme, HttpContext.Request.Host);
             Response.StatusCode = 304;
-            var username = HttpContext.Session.GetString("username");
-            if (username == null)
+            if (string.IsNullOrEmpty(username))
             {
                 // Please no hakk
                 return;
@@ -84,16 +81,27 @@ namespace BorisKnowsAllApi.Controllers
                 return;
             }
             user.AddContact(contact.id, contact.name, contact.server);
-            // todo call invite
+
+            
+          /*  // calling invite on other server
+            var content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("from", username),
+                new KeyValuePair<string, string>("to", contact.id),
+                new KeyValuePair<string, string>("server", url)
+            });
+            var httpClient = new HttpClient();
+            var response = httpClient.PostAsync($"{contact.server}/api/invitations", content);
+            Console.WriteLine(response.Status);*/
+
             Response.StatusCode = 201;
         }
 
         /******************************************************************/
         // GET api/contacts/:id
-        [HttpGet("contacts/{id}")]
-        public Contact GetContact(string id)
+        [HttpGet("contacts/{username}/{id}")]
+        public Contact GetContact(string username, string id)
         {
-            var username = HttpContext.Session.GetString("username");
             var user = service.Get(username);
             if (user == null)
             {
@@ -111,11 +119,10 @@ namespace BorisKnowsAllApi.Controllers
         }
         
         
-        [HttpPut("contacts/{id}")]
-        public void EditContact(string id, [FromBody] Contact contact)
+        [HttpPut("contacts/{username}/{id}")]
+        public void EditContact(string username, string id, [FromBody] Contact contact)
         {
             // update the contact
-            var username = HttpContext.Session.GetString("username");
             var user = service.Get(username);
             if (user == null)
             {
@@ -135,10 +142,9 @@ namespace BorisKnowsAllApi.Controllers
             Response.StatusCode = 204;
         }
 
-        [HttpDelete("contacts/{id}")]
-        public void DeleteContact(string id)
+        [HttpDelete("contacts/{username}/{id}")]
+        public void DeleteContact(string username, string id)
         {
-            var username = HttpContext.Session.GetString("username");
             var user = service.Get(username);
             if (user == null)
             {
@@ -156,10 +162,9 @@ namespace BorisKnowsAllApi.Controllers
 
         /******************************************************************/
         // GET api/contacts/:id/messages
-        [HttpGet("contacts/{id}/messages")]
-        public IEnumerable<Message> GetContactMessages(string id)
+        [HttpGet("contacts/{username}/{id}/messages")]
+        public IEnumerable<Message> GetContactMessages(string username, string id)
         {
-            var username = HttpContext.Session.GetString("username");
             var user = service.Get(username);
             if (user == null)
             {
@@ -180,10 +185,9 @@ namespace BorisKnowsAllApi.Controllers
 
         
         // POST api/contacts/:id/messages
-        [HttpPost("contacts/{id}/messages")]
-        public void PostContactMessage(string id, [FromBody] string contect)
+        [HttpPost("contacts/{username}/{id}/messages")]
+        public void PostContactMessage(string username, string id, [FromBody] string content)
         {
-            var username = HttpContext.Session.GetString("username");
             var user = service.Get(username);
             if (user == null)
             {
@@ -198,16 +202,30 @@ namespace BorisKnowsAllApi.Controllers
                 return;
             }
             Response.StatusCode = 201;
-            contact.SendMessage(true, contect);
+            contact.SendMessage(true, content);
             // todo call transfer
+
+            /*
+            // calling invite on other server
+            string url = string.Format("{0}://{1}",
+                       HttpContext.Request.Scheme, HttpContext.Request.Host);
+            var payload = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("from", username),
+                new KeyValuePair<string, string>("to", contact.id),
+                new KeyValuePair<string, string>("content", content)
+            });
+            var httpClient = new HttpClient();
+            var response = await httpClient.PostAsync($"{contact.server}/api/transfer", content);
+            Console.WriteLine(response.StatusCode);*/
         }
 
         /******************************************************************/
-        [HttpGet("contacts/{id}/messages/{id2}")]
-        public Message GetMessage(string id, int id2)
+        [HttpGet("contacts/{username}/{id}/messages/{id2}")]
+        public Message GetMessage(string username, string id, int id2)
         {
             // return id2 message
-            IEnumerable <Message> list = GetContactMessages(id);
+            IEnumerable <Message> list = GetContactMessages(username, id);
             if (list == null)
             {
                 Response.StatusCode = 404;
@@ -225,11 +243,11 @@ namespace BorisKnowsAllApi.Controllers
         }
 
 
-        [HttpPut("contacts/{id}/messages/{id2}")]
-        public void EditMessage(string id, int id2, [FromBody] string content)
+        [HttpPut("contacts/{username}/{id}/messages/{id2}")]
+        public void EditMessage(string username, string id, int id2, [FromBody] string content)
         {
             // update a message
-            Message message = GetMessage(id, id2);
+            Message message = GetMessage(username, id, id2);
             if (message == null)
             {
                 Response.StatusCode = 304;
@@ -239,11 +257,12 @@ namespace BorisKnowsAllApi.Controllers
             Response.StatusCode = 204;
         }
 
-        [HttpDelete("contacts/{id}/messages/{id2}")]
-        public void DeleteMessage(string id, int id2)
+
+        [HttpDelete("contacts/{username}/{id}/messages/{id2}")]
+        public void DeleteMessage(string username, string id, int id2)
         {
             // delete the message with that id
-            Message message = GetMessage(id, id2);
+            Message message = GetMessage(username, id, id2);
             if (message == null)
             {
                 Response.StatusCode = 304;
@@ -279,7 +298,6 @@ namespace BorisKnowsAllApi.Controllers
             Response.StatusCode = 201;
             user.AddContact(invitation.from, invitation.from, invitation.server);
         }
-
 
         [HttpPost("transfer")]
         public void Transfer([FromBody] Transfer transfer)

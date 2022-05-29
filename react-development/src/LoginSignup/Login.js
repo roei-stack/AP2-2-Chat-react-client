@@ -10,23 +10,8 @@ function Login() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
+  const [status, setStatus] = useState(0);
   const navigate = useNavigate();
-
-  const loginRemote = async () => {
-    const response = await fetch('https://localhost:7007/api/Users/Login', {
-      method: 'POST',
-      body: JSON.stringify({
-        username: username,
-        password: password,
-        nickname: ''
-      }),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-    const data = await response.json();
-    return data.statusCode === 200;
-  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,12 +20,31 @@ function Login() {
   };
 
   useEffect(() => {
-    if (Object.keys(errors).length === 0 && isSubmit) {
-      navigate('/chat', { state: { username: username, password: password} });
+    if (status === 200 && Object.keys(errors).length === 0 && isSubmit) {
+        navigate('/chat', { state: { username: username, password: password} });
+    } else {
+      errors.password = "Sorry, username and/or password do not exist!";
     }
-  }, [errors])
+  }, [status]);
 
-  const validate = () => {
+
+  const loginRemote = async () => {
+    const response = await fetch('https://localhost:7007/api/Users/Login', {
+      method: 'POST',
+      headers: {
+        'accept': '*/*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password
+      })
+    });
+    console.log(response.status);
+    setStatus(response.status)
+  }
+
+  const validate = async () => {
     var regexNumber = /\d/g;
     var regexLetter = /[a-zA-Z]/g;
     const errors = {};
@@ -51,7 +55,8 @@ function Login() {
       errors.password = "Password must be non empty and contain a character and a letter!";
     }
     if (Object.keys(errors).length === 0) {
-      if (!loginRemote() || !auth(username, password)) {
+      loginRemote();
+      if (!auth(username, password)) {
         errors.password = "Sorry, username and/or password do not exist!";
       }
     }

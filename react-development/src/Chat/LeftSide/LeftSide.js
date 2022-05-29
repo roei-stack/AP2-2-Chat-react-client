@@ -1,25 +1,28 @@
 import UserHeader from "./UserHeader";
-import ContactBlock from "./ContactBlock";
+import ContactsBlock from "./ContactsBlock";
+import { useEffect, useState } from 'react';
+import imageDefault from '../images/boris.jpg'
+function LeftSide({ username, contacts, reload, setActiveContact }) {
 
-function LeftSide({user, contacts, reload, setActiveContact}) {
 
-    // look for users with active chat with current user
-    const contactBlocks = [];
-    for (let i = 0; i < contacts.length; i++) {
-        contactBlocks.push({ contact: contacts[i] });
-    }
+    // generate components from list of contacts
 
-    // create a list of "chat block" components
-    const contactBlockList = contactBlocks.map((cb, key) => {
-        return <ContactBlock user={user} contact={cb.contact} setActiveContact={setActiveContact} key={key} />
+    const components = contacts.map((item, key) => {
+        return <ContactsBlock img={imageDefault} id={item.id} name={item.name} last={item.last} lastdate={item.lastdate} setActive={setActiveContact} key={key} />
     });
 
+
+
+    // contactBlocks :: GET api/contacts
     return (
         <div id="left-side" className="col-4 vh-100">
-            <UserHeader user={user} reload={reload}/>
-            <div className="chat-list list-group vh-100">{contactBlockList}</div>
+            <UserHeader username={username} reload={reload} />
+            <div className="chat-list list-group vh-100">
+                {components}
+            </div>
         </div>
     );
 }
 
 export default LeftSide;
+

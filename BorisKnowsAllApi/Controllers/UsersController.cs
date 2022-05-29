@@ -34,7 +34,7 @@ namespace BorisKnowsAllApi.Controllers
                 return;
             }
             // correct details
-            HttpContext.Session.SetString("username", u.Username);
+            //HttpContext.Session.SetString("username", u.Username);
             Response.StatusCode = 200;
         }
 
