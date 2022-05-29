@@ -7,20 +7,23 @@ using System.Net;
 
 namespace BorisKnowsAllApi.Controllers
 {
-    [Route("api/contacts")]
+    [Route("api")]
     [ApiController]
     public class ContactsController : ControllerBase
     {
         private readonly UserService service;
+        private string url;
 
         public ContactsController()
         {
-            service = new UserService();
+            this.service = new UserService();
+            this.url = string.Format("{0}://{1}",
+                       HttpContext.Request.Scheme, HttpContext.Request.Host);
         }
         
         // GET: api/contacts/
         // returns a list of the connected user's contacts
-        [HttpGet]
+        [HttpGet("contacts")]
         public IEnumerable<Contact> GetAll()
         {
             var username = HttpContext.Session.GetString("username");
@@ -41,29 +44,28 @@ namespace BorisKnowsAllApi.Controllers
         
         // POST: api/contacts/
         // adds a new contact
-        [HttpPost]
-        public HttpResponseMessage Create([FromBody] Contact contact)
+        [HttpPost("contacts")]
+        public void Create([FromBody] Contact contact)
         {
-            HttpResponseMessage response = new HttpResponseMessage();
-            response.StatusCode = HttpStatusCode.NotModified;
+            Response.StatusCode = 304;
             var username = HttpContext.Session.GetString("username");
             if (username == null)
             {
-                response.ReasonPhrase = "Please no hakk";
-                return response;
+                // Please no hakk
+                return;
             }
             var user = service.Get(username);
             if (user == null)
             {
-                response.ReasonPhrase = "How the fuck did you even get here?";
-                return response;
+                // How the fuck did you even get here?
+                return;
             }
 
             // you cant add yourself as a user
             if (username == contact.id)
             {
-                response.ReasonPhrase = "No friends?";
-                return response;
+                // No friends?
+                return;
             }
 
             /*
@@ -78,18 +80,17 @@ namespace BorisKnowsAllApi.Controllers
             // check if contact already exists
             if (user.GetContact(contact.id) != null)
             {
-                response.ReasonPhrase = "This contact is already registered";
-                return response;
+                // This contact is already registered
+                return;
             }
-
             user.AddContact(contact.id, contact.name, contact.server);
             // todo call invite
-            response.StatusCode = HttpStatusCode.Created;
-            return response;
+            Response.StatusCode = 201;
         }
-        
+
+        /******************************************************************/
         // GET api/contacts/:id
-        [HttpGet("{id}")]
+        [HttpGet("contacts/{id}")]
         public Contact GetContact(string id)
         {
             var username = HttpContext.Session.GetString("username");
@@ -110,7 +111,7 @@ namespace BorisKnowsAllApi.Controllers
         }
         
         
-        [HttpPut("{id}")]
+        [HttpPut("contacts/{id}")]
         public void EditContact(string id, [FromBody] Contact contact)
         {
             // update the contact
@@ -134,7 +135,7 @@ namespace BorisKnowsAllApi.Controllers
             Response.StatusCode = 204;
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("contacts/{id}")]
         public void DeleteContact(string id)
         {
             var username = HttpContext.Session.GetString("username");
@@ -153,9 +154,9 @@ namespace BorisKnowsAllApi.Controllers
             Response.StatusCode = 204;
         }
 
-        
+        /******************************************************************/
         // GET api/contacts/:id/messages
-        [HttpGet("{id}/messages")]
+        [HttpGet("contacts/{id}/messages")]
         public IEnumerable<Message> GetContactMessages(string id)
         {
             var username = HttpContext.Session.GetString("username");
@@ -179,7 +180,7 @@ namespace BorisKnowsAllApi.Controllers
 
         
         // POST api/contacts/:id/messages
-        [HttpPost("{id}/messages")]
+        [HttpPost("contacts/{id}/messages")]
         public void PostContactMessage(string id, [FromBody] string contect)
         {
             var username = HttpContext.Session.GetString("username");
@@ -201,8 +202,8 @@ namespace BorisKnowsAllApi.Controllers
             // todo call transfer
         }
 
-
-        [HttpGet("{id}/messages/{id2}")]
+        /******************************************************************/
+        [HttpGet("contacts/{id}/messages/{id2}")]
         public Message GetMessage(string id, int id2)
         {
             // return id2 message
@@ -224,7 +225,7 @@ namespace BorisKnowsAllApi.Controllers
         }
 
 
-        [HttpPut("{id}/messages/{id2}")]
+        [HttpPut("contacts/{id}/messages/{id2}")]
         public void EditMessage(string id, int id2, [FromBody] string content)
         {
             // update a message
@@ -238,7 +239,7 @@ namespace BorisKnowsAllApi.Controllers
             Response.StatusCode = 204;
         }
 
-        [HttpDelete("{id}/messages/{id2}")]
+        [HttpDelete("contacts/{id}/messages/{id2}")]
         public void DeleteMessage(string id, int id2)
         {
             // delete the message with that id
@@ -251,6 +252,57 @@ namespace BorisKnowsAllApi.Controllers
             service.Get(HttpContext.Session.GetString("username")).
                 GetContact(id).RemoveMessage(id2);
             Response.StatusCode = 204;
+        }
+
+        /******************************************************************/
+        [HttpPost("intitations")]
+        public void Invitation([FromBody] Invitation invitation)
+        {
+            // we received an invite from a user in another server
+            // so we will add 'from' as a contact for 'to'
+            var user = service.Get(invitation.to);
+            if (user == null)
+            {
+                // 404 user not found
+                Response.StatusCode = 404;
+                return;
+            }
+
+            if (user.GetContact(invitation.from) != null)
+            {
+                // 304 not modified - as contact already exist
+                Response.StatusCode = 304;
+                return;
+            }
+
+            // 201 - created contact
+            Response.StatusCode = 201;
+            user.AddContact(invitation.from, invitation.from, invitation.server);
+        }
+
+
+        [HttpPost("transfer")]
+        public void Transfer([FromBody] Transfer transfer)
+        {
+            // we received a transfer from a user in another server, with a message contect
+            // so we will foward the message to the destination
+            var user = service.Get(transfer.to);
+            if (user == null)
+            {
+                // 404 user not found
+                Response.StatusCode = 404;
+                return;
+            }
+            Contact contact = user.GetContact(transfer.from);
+            if (contact == null)
+            {
+                // 404 contact not found
+                Response.StatusCode = 404;
+                return;
+            }
+            // 201 - created message
+            contact.SendMessage(false, transfer.contect);
+            Response.StatusCode = 201;
         }
     }
 }
