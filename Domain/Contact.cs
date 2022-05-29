@@ -10,7 +10,6 @@ namespace Domain
     public class Contact
     {
         [Key]
-        [Required]
         public string id { get; set; }
 
         // nickname
@@ -20,14 +19,24 @@ namespace Domain
         public string server { get; set;}
 
         public string last { get; set; } = null;
-        public string lastdate { get; set; } = null;
+        public DateTime lastdate { get; set; }
+
+        private int idCounter = 0;
+
         private ICollection<Message> Messages { get; set; } = new List<Message>();
 
-        public void SendMessage(Message message)
+        public void SendMessage(bool sent, string content)
         {
-            Messages.Add(message);
-            last = message.contect;
-            lastdate = message.contect.ToString();
+            Message msg = new Message() {
+                id = this.idCounter,
+                sent = sent,
+                contect = content,
+                created = DateTime.Now
+            };
+            Messages.Add(msg);
+            last = msg.contect;
+            lastdate = msg.created;
+            idCounter++;
         }
 
         public Message GetLastMessage()
@@ -54,6 +63,11 @@ namespace Domain
         public ICollection<Message> GetAllMessages()
         {
             return Messages;
+        }
+
+        public void RemoveMessage(int messageId)
+        {
+            Messages.Remove(GetMessage(messageId));
         }
     }   
 }

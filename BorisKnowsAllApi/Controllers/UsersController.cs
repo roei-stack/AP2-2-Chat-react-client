@@ -19,34 +19,37 @@ namespace BorisKnowsAllApi.Controllers
         }
 
         [HttpPost, Route("Login")]
-        public HttpResponseMessage Login([FromBody] User user)
+        public void Login([FromBody] User user)
         {
             var u = service.Get(user.Username);
             if (u == null)
             {
-                return new HttpResponseMessage(HttpStatusCode.NotFound);
+                Response.StatusCode = 404;
+                return;
             }
 
             if (u.Password != user.Password)
             {
-                return new HttpResponseMessage(HttpStatusCode.NotFound);
+                Response.StatusCode = 404;
+                return;
             }
             // correct details
             HttpContext.Session.SetString("username", u.Username);
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            Response.StatusCode = 200;
         }
 
         
         [HttpPost, Route("Signup")]
-        public HttpResponseMessage Signup([FromBody] User user)
+        public void Signup([FromBody] User user)
         {
             if (service.Get(user.Username) != null)
             {
-                return new HttpResponseMessage(HttpStatusCode.NotFound);
+                Response.StatusCode = 404;
+                return;
             }
-            // maybe HttpContext.Session.SetString("username", null);
+            // maybe HttpContext.Session.Clear();
             service.Create(user.Username, user.Password, user.Nickname);
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            Response.StatusCode = 200;
         }
     }
 }
