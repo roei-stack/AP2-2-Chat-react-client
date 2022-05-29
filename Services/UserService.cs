@@ -15,7 +15,32 @@ namespace Services
             new User() { Username = "2", Password = "a1", Nickname = "robi"},
             new User() { Username = "3", Password = "a1", Nickname = "shimi"},
         };
-        
+        /*
+        public UserService()
+        {
+            foreach (User user1 in users)
+            {
+                foreach (User user2 in users)
+                {
+                    if (user1.Username != user2.Username)
+                    {
+                        string server = "https://localhost:7007";
+                        if (user1.GetContact(user2.Username) == null)
+                        {
+                            user1.AddContact(user2.Username, user2.Username, server);
+                        }
+                        if (user2.GetContact(user1.Username) == null)
+                        {
+                            user2.AddContact(user1.Username, user1.Username, server);
+                        }
+                        user1.GetContact(user2.Username).SendMessage(true, $"hello {user2.Nickname}");
+                        user2.GetContact(user1.Username).SendMessage(false, $"hello {user2.Nickname}");
+                        user2.GetContact(user1.Username).SendMessage(true, $"thanks {user1.Nickname}");
+                        user1.GetContact(user2.Username).SendMessage(false, $"thanks {user1.Nickname}");
+                    }
+                }
+            }
+        }*/
 
         public User Get(string username)
         {
