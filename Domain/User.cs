@@ -17,6 +17,8 @@ namespace Domain
         public string Nickname { get; set; }
         private List<Contact> Contacts { get; set; } = new List<Contact>();
 
+        private const string Server = "bibi";
+
         public void AddContact(string id, string name, string server)
         {
             this.Contacts.Add(new Contact { id = id, name = name, server = server});
