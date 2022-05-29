@@ -1,7 +1,7 @@
 import {useEffect} from 'react'
 import MessageBox from './MessageBox';
 
-function MessageList({contact}) {
+function MessageList({messages}) {
 
     // scroll down
     useEffect(() => {
@@ -10,22 +10,8 @@ function MessageList({contact}) {
     });
 
     // render messages
-    let initState = [];
-    if (contact) {
-        initState = contact.messages;
-    }
-    const messageList = initState.map((msg, key) => {
-        let sentBy = "";
-        if (msg.self) {
-            sentBy = "self";
-        } else {
-            sentBy = "other";
-        }
-        let datatype = msg.data.type;
-        let data = msg.data.data;
-        let time = msg.data.time.toString();
-        return <MessageBox sentBy={sentBy} datatype={datatype} data={data} timeSent={time} key={key} />
-    });
+    /*const messageList = messages.map((msg, key) => {
+    });*/
 
     return (
         <div id="chat-box" className="chat-box">

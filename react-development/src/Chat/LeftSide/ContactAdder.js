@@ -1,32 +1,55 @@
-import { useState, useRef } from 'react'
-import { searchUser, addContact, searchContact } from '../../data/data';
-function ContactAdder({ user, reload}) {
-    const [error, setError] = useState("the username is used to identify your contact");
-    const input = useRef("");
+import { useState, useEffect, useRef } from 'react'
 
-    const textChanged = function () {
-        // validate the input
-        // 1. username must exist in user_list
-        // 2. username is not an active contact
-        let btn = document.getElementById('add-contact-btn');
-        btn.disabled = true;
-        let index = searchContact(user, input.current.value);
-        if (user.username === input.current.value) {
-            setError("This is you");
-        } else if (!searchUser(input.current.value)) {
-            setError("Username not found");
-        } else if (index !== null) {
-            setError("This contact is already registered");
-        } else {
-            setError("Looks good");
-            btn.disabled = false;
+function ContactAdder({ username, reload }) {
+
+    
+    const idRef = useRef("");
+    const serverRef = useRef("");
+
+    const [err, setErr] = useState("Add a contact");
+    const [response, setResponse] = useState(0);
+
+    const addNewContact = async (e) => {
+        e.preventDefault();
+        let contactId = idRef.current.value;
+        let contactServer = serverRef.current.value;
+        if (!contactId || !contactServer) {
+            setErr("just dont");
+            return;
         }
-    }
-
-    const addNewContact = function () {
-        addContact(user, input.current.value);
+        // send request to server
+        const response = await fetch('https://localhost:7007/api/contacts/' + username, {
+            method: 'POST',
+            headers: {
+                'accept': '*/*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: contactId,
+                name: contactId,
+                server: contactServer
+            })
+        });
+        console.log('after fetch')
+        setResponse(response.status);
         reload();
     }
+
+    useEffect(() => {
+        if (response === 0) {
+            return;
+        }
+        console.log('here')
+        console.log(response);
+        if (response !== 201) {
+            setErr("An error occured");
+            return;
+        }
+        reload();
+    }, [response]);
+
+
+
     return (
         <div>
             <button id="new-contact" type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop3">
@@ -43,8 +66,10 @@ function ContactAdder({ user, reload}) {
                             <div className="mb-2">
                                 <div className="mb-2">
                                     <label className="form-label">Contact's username</label>
-                                    <input ref={input} onChange={textChanged} type="text" className="form-control"></input>
-                                    {error}
+                                    <input ref={idRef} type="text" className="form-control"></input>
+                                    <label className="form-label">Contact's server</label>
+                                    <input ref={serverRef} type="text" className="form-control"></input>
+                                    {err}
                                 </div>
                                 <button onClick={addNewContact} id="add-contact-btn" className="btn btn-primary" data-bs-dismiss="modal">
                                     <i className="bi bi-person-plus"></i> Add contact
