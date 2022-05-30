@@ -69,5 +69,5 @@ namespace Domain
         {
             Messages.Remove(GetMessage(messageId));
         }
-    }   
+    }
 }
