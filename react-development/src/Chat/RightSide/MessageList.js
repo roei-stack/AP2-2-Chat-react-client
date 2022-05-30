@@ -1,7 +1,11 @@
 import {useEffect} from 'react'
 import MessageBox from './MessageBox';
+import { HubConnectionBuilder } from '@microsoft/signalr'
 
 function MessageList({messages}) {
+
+    var connection = new signalR.HubConnectionBuilder()
+    .withUrl("/chatHub").build();
 
     // scroll down
     useEffect(() => {

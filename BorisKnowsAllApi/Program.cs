@@ -1,4 +1,8 @@
+using BorisKnowsAllApi.Hubs;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSignalR();
 
 // Add services to the container.
 
@@ -48,5 +52,7 @@ app.UseAuthorization();
 app.UseSession();
 
 app.MapControllers();
+
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();
