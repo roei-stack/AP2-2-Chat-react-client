@@ -8,14 +8,12 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
   const [status, setStatus] = useState(0);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors(validate());
-    setIsSubmit(true);
   };
 
   useEffect(() => {
