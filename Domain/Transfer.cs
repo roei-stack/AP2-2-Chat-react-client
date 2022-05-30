@@ -16,6 +16,6 @@ namespace Domain
         public string to { get; set; }
 
         [Required]
-        public string contect { get; set; }
+        public string content { get; set; }
     }
 }

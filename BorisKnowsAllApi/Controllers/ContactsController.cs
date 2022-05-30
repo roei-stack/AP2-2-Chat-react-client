@@ -1,7 +1,10 @@
 ﻿using Domain;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Services;
 using System.Net;
+using System.Net.Http.Headers;
+using System.Text;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -80,22 +83,23 @@ namespace BorisKnowsAllApi.Controllers
                 // This contact is already registered
                 return;
             }
-            user.AddContact(contact.id, contact.name, contact.server);
 
-            
-            // calling invite on other server
+            // sending invite to other server:
+            user.AddContact(contact.id, contact.name, contact.server);
             var content = new FormUrlEncodedContent(new[]
-            {
+           {
                 new KeyValuePair<string, string>("from", username),
                 new KeyValuePair<string, string>("to", contact.id),
                 new KeyValuePair<string, string>("server", url)
             });
             var httpClient = new HttpClient();
             var response = await httpClient.PostAsync($"{contact.server}/api/invitations", content);
-            Console.WriteLine(response.StatusCode);
 
-
-            Response.StatusCode = 201;
+            if (response.IsSuccessStatusCode)
+            {
+                Response.StatusCode = 201;
+            }
+            Response.StatusCode = 304;
         }
 
         /******************************************************************/
@@ -184,10 +188,10 @@ namespace BorisKnowsAllApi.Controllers
             return contact.GetAllMessages();
         }
 
-        
+
         // POST api/contacts/:id/messages
         [HttpPost("contacts/{username}/{id}/messages")]
-        public void PostContactMessage(string username, string id, [FromBody] string content)
+        public async void PostContactMessage(string username, string id, [FromBody] string content)
         {
             var user = service.Get(username);
             if (user == null)
@@ -206,19 +210,29 @@ namespace BorisKnowsAllApi.Controllers
             contact.SendMessage(true, content);
             // todo call transfer
 
-            /*
+
             // calling invite on other server
-            string url = string.Format("{0}://{1}",
-                       HttpContext.Request.Scheme, HttpContext.Request.Host);
-            var payload = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("from", username),
-                new KeyValuePair<string, string>("to", contact.id),
-                new KeyValuePair<string, string>("content", content)
-            });
+            string url = string.Format("{0}://{1}", HttpContext.Request.Scheme, HttpContext.Request.Host);
+
+
             var httpClient = new HttpClient();
-            var response = await httpClient.PostAsync($"{contact.server}/api/transfer", content);
-            Console.WriteLine(response.StatusCode);*/
+            var payload = new Dictionary<string, string>
+            {
+                { "from", username },
+                { "to", contact.id },
+                { "content", content}
+            };
+            var json = JsonConvert.SerializeObject(payload);
+            var postdata = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await httpClient.PostAsync($"{contact.server}/api/transfer", postdata);
+
+
+            // payload.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            // httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
+
+            //var response = await httpClient.PostAsJsonAsync($"{contact.server}/api/transfer", payload);
+            Console.WriteLine(response.StatusCode);
+
         }
 
         /******************************************************************/
@@ -284,7 +298,7 @@ namespace BorisKnowsAllApi.Controllers
             if (user == null)
             {
                 // 404 user not found
-                Response.StatusCode = 404;
+                Response.StatusCode = 500;
                 return;
             }
 
@@ -320,7 +334,7 @@ namespace BorisKnowsAllApi.Controllers
                 return;
             }
             // 201 - created message
-            contact.SendMessage(false, transfer.contect);
+            contact.SendMessage(false, transfer.content);
             Response.StatusCode = 201;
         }
     }
