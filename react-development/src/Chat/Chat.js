@@ -46,7 +46,7 @@ function Chat() {
         }
         // update contacts list
         fetchContacts();
-    }, [reload])
+    }, [activeContact, reload])
 
     return (
         <section id="chat" className="container-fluid">
