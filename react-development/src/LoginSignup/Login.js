@@ -20,17 +20,19 @@ function Login() {
   };
 
   useEffect(() => {
-    console.log(status)
-    if (status === 200 && Object.keys(errors).length === 0 && isSubmit) {
+    if (status === 0) {
+      return;
+    }
+    if (status === 200) {
       navigate('/chat', { state: { username: username, password: password } });
     } else {
-      console.log(errors)
+      setErrors({password: 'sorry, wrong username/password'})
+      setStatus(0)
     }
   }, [status]);
 
 
   const loginRemote = async () => {
-    console.log('hh');
     const response = await fetch('https://localhost:7007/api/Users/Login', {
       method: 'POST',
       headers: {
@@ -42,7 +44,6 @@ function Login() {
         password: password
       })
     }).catch((e) => console.log(e))
-    console.log(status);
     setStatus(response.status)
   }
 
