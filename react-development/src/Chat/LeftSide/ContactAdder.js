@@ -30,7 +30,6 @@ function ContactAdder({ username, reload }) {
                 server: contactServer
             })
         });
-        console.log('after fetch')
         setResponse(response.status);
         reload();
     }

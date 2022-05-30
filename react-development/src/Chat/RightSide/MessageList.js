@@ -10,8 +10,9 @@ function MessageList({messages}) {
     });
 
     // render messages
-    /*const messageList = messages.map((msg, key) => {
-    });*/
+    const messageList = messages.map((msg, key) => {
+        return <MessageBox content={msg.content} created={msg.created} sent={msg.sent} id={msg.id} datatype='text' key={key}/>
+    });
 
     return (
         <div id="chat-box" className="chat-box">

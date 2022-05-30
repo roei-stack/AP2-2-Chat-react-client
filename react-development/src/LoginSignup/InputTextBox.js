@@ -20,7 +20,7 @@ function InputTextBox({ type, id, placeholder, setValue, possibleError }) {
                 placeholder={placeholder}
             />
             <p
-                className="err text-center form-text">
+                className="err text-center text-danger form-text">
                 {possibleError}
             </p>
         </div>

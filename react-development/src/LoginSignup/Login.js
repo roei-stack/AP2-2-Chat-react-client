@@ -20,15 +20,17 @@ function Login() {
   };
 
   useEffect(() => {
+    console.log(status)
     if (status === 200 && Object.keys(errors).length === 0 && isSubmit) {
-        navigate('/chat', { state: { username: username, password: password} });
+      navigate('/chat', { state: { username: username, password: password } });
     } else {
-      errors.password = "Sorry, username and/or password do not exist!";
+      console.log(errors)
     }
   }, [status]);
 
 
   const loginRemote = async () => {
+    console.log('hh');
     const response = await fetch('https://localhost:7007/api/Users/Login', {
       method: 'POST',
       headers: {
@@ -39,12 +41,12 @@ function Login() {
         username: username,
         password: password
       })
-    });
-    console.log(response.status);
+    }).catch((e) => console.log(e))
+    console.log(status);
     setStatus(response.status)
   }
 
-  const validate = async () => {
+  const validate = () => {
     var regexNumber = /\d/g;
     var regexLetter = /[a-zA-Z]/g;
     const errors = {};
@@ -56,19 +58,16 @@ function Login() {
     }
     if (Object.keys(errors).length === 0) {
       loginRemote();
-      if (!auth(username, password)) {
-        errors.password = "Sorry, username and/or password do not exist!";
-      }
     }
     return errors;
   }
 
   return (
     <form id="loginform" className="row g-3 box" onSubmit={handleSubmit}>
-      <DividerText text="Welcome to BorisChats"/>
-      <InputTextBox type="text" id="username" placeholder="Username" possibleError={errors.username} setValue={setUsername}/>
-      <InputTextBox type="password" id="pasword" placeholder="Password" possibleError={errors.password} setValue={setPassword}/>
-        <SubmitBtn text="LOGIN"></SubmitBtn>
+      <DividerText text="Welcome to BorisChats" />
+      <InputTextBox type="text" id="username" placeholder="Username" possibleError={errors.username} setValue={setUsername} />
+      <InputTextBox type="password" id="pasword" placeholder="Password" possibleError={errors.password} setValue={setPassword} />
+      <SubmitBtn text="LOGIN"></SubmitBtn>
       <br></br>
       <div
         className="d-flex justify-content-center"

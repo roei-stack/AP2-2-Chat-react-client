@@ -6,11 +6,9 @@ import ChatHeader from './RightSide/ChatHeader';
 import Inputs from './RightSide/Inputs';
 import MessageList from './RightSide/MessageList';
 import { useLocation } from 'react-router-dom';
-import { searchUser } from '../data/data';
 
 function Chat() {
     const { state } = useLocation();
-    var user = searchUser(state.username);
 
     let username = state.username;
     let password = state.password;
@@ -18,13 +16,12 @@ function Chat() {
     const [listContacts, setListContacts] = useState([]);
     const [activeContact, setActiveContact] = useState(null);
     const [messages, setMessages] = useState([]);
-    const [reload, setReload] = useState(false);
-    const reloadPage = () => setReload(!reload);
 
+    const [reload, setReload] = useState(false);
+    const refresh = () => setReload(!reload);
 
     let contactNickname = "Select a chat or add a new contact";
     let contactUsername = "";
-    let contactImage = imageDefault;
     
     if (activeContact) {
         contactNickname = activeContact;
@@ -41,7 +38,7 @@ function Chat() {
         if (activeContact) {
             fetchMessages();
         }
-    }, [activeContact])
+    }, [activeContact, reload])
 
     useEffect(() => {
         const fetchContacts = async () => {
@@ -51,28 +48,16 @@ function Chat() {
         }
         // update contacts list
         fetchContacts();
-        console.log(listContacts);
     }, [reload])
 
-
-
-    // get contacts from remote
-
-    /*
-        TODO:
-        - fix audio css
-        - add logout button
-        - same messages array for both users
-    */
     return (
         <section id="chat" className="container-fluid">
             <div id="chat-page" className="row g-2">
-
-                <LeftSide username={username} contacts={listContacts} reload={reloadPage} setActiveContact={setActiveContact} />
-
+                <LeftSide username={username} contacts={listContacts} reload={refresh} setActiveContact={setActiveContact} />
                 <div id="right-side" className="col-8 vh-100">
                     <ChatHeader otherUsername={activeContact} otherNickname={contactNickname} otherImage={imageDefault} />
                     <MessageList messages={messages} />
+                    <Inputs username={username} contactId={activeContact} reload={refresh}/>
                 </div>
             </div>
         </section>
@@ -82,7 +67,6 @@ function Chat() {
 export default Chat;
 
 /*
-                    <MessageList contact={activeContact} />
                     <Inputs user={user} contact={activeContact} reload={reloadPage} />
 */
 
