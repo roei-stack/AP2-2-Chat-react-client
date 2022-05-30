@@ -63,10 +63,3 @@ function Chat() {
 }
 
 export default Chat;
-
-/*
-                    <Inputs user={user} contact={activeContact} reload={reloadPage} />
-*/
-
-// <LeftSide user={user} cl={listContacts} contacts={user.contacts} reload={reloadPage} setActiveContact={setActiveContact} />
-
