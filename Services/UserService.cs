@@ -19,7 +19,6 @@ namespace Services
             }
             users = new List<User>()
             {
-                new User() { Username = "bobi", Password = "a1", Nickname = "bobi"},
                 new User() { Username = "robi", Password = "a1", Nickname = "robi"},
                 new User() { Username = "shimi", Password = "a1", Nickname = "shimi"},
                 new User() { Username = "bob", Password = "a1", Nickname = "bob"}
@@ -52,6 +51,7 @@ namespace Services
                         .SendMessage(false, $"thanks {user.Nickname}");
                 }
             }
+            users.Add(new User() { Username = "bobi", Password = "a1", Nickname = "bobi" });
         }
 
         public User Get(string username)
