@@ -7,7 +7,7 @@
 
 0. Make sure you have download the following: `asp.net6` `node.js`<br>
 1. clone the repository, (choose option `open with visual studio`)<br>
-2. start `BorisKnowsAllApi` and `BorisWeb` with vs or `dotnet`
+2. start `BorisKnowsAllApi` and `BorisWeb` with VS or `dotnet`
 3. go to `react-development/src/data/data.js` and make sure `API_URL` is `BorisKnowsAllApi` base address<br>
 4. navigate to `react-development`<br>
 5. open the terminal, and type `npm install` then `npm-start`<br>
