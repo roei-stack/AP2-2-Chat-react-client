@@ -317,7 +317,7 @@ namespace BorisKnowsAllApi.Controllers
         [HttpPost("transfer")]
         public void Transfer([FromBody] Transfer transfer)
         {
-            // we received a transfer from a user in another server, with a message contect
+            // we received a transfer from a user in another server, with a message content
             // so we will foward the message to the destination
             var user = service.Get(transfer.to);
             if (user == null)
