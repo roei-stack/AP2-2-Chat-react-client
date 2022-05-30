@@ -46,6 +46,7 @@ namespace BorisKnowsAllApi.Controllers
         [HttpPost("contacts/{username}")]
         public async void Create(string username, [FromBody] Contact contact)
         {
+
             if (string.IsNullOrEmpty(username))
             {
                 // Please no hakk
