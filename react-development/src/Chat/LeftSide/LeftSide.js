@@ -1,6 +1,5 @@
 import UserHeader from "./UserHeader";
 import ContactsBlock from "./ContactsBlock";
-import { useEffect, useState } from 'react';
 import imageDefault from '../images/boris.jpg'
 function LeftSide({ username, contacts, reload, setActiveContact }) {
 

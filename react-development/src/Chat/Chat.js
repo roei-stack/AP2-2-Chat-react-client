@@ -6,6 +6,7 @@ import ChatHeader from './RightSide/ChatHeader';
 import Inputs from './RightSide/Inputs';
 import MessageList from './RightSide/MessageList';
 import { useLocation } from 'react-router-dom';
+import * as U from '../data/data'
 
 function Chat() {
     const { state } = useLocation();
@@ -29,7 +30,7 @@ function Chat() {
     useEffect(() => {
         // update contacts list
         const fetchMessages = async () => {
-            const response = await fetch('https://localhost:7007/api/contacts/' + username + '/' + activeContact + '/messages');
+            const response = await fetch(U.API_URL + '/api/contacts/' + username + '/' + activeContact + '/messages');
             const data = await response.json();
             setMessages(data);
         }
@@ -40,7 +41,7 @@ function Chat() {
 
     useEffect(() => {
         const fetchContacts = async () => {
-            const response = await fetch('https://localhost:7007/api/contacts/' + username);
+            const response = await fetch(U.API_URL + '/api/contacts/' + username);
             const data = await response.json();
             setListContacts(data);
         }

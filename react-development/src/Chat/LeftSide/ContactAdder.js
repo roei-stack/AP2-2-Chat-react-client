@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import * as U from '../../data/data'
 
 function ContactAdder({ username, reload }) {
 
@@ -18,7 +19,7 @@ function ContactAdder({ username, reload }) {
             return;
         }
         // send request to server
-        const response = await fetch('https://localhost:7007/api/contacts/' + username, {
+        const response = await fetch(U.API_URL + '/api/contacts/' + username, {
             method: 'POST',
             headers: {
                 'accept': '*/*',

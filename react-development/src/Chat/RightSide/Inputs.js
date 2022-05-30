@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react'
+import * as U from '../../data/data'
 
 function Inputs({ username, contactId, reload }) {
 
@@ -11,7 +12,7 @@ function Inputs({ username, contactId, reload }) {
             return;
         }
         // sending message
-        const response = await fetch('https://localhost:7007/api/contacts/' + username + '/' + contactId + '/messages', {
+        const response = await fetch(U.API_URL + '/api/contacts/' + username + '/' + contactId + '/messages', {
             method: 'POST',
             headers: {
                 'accept': '*/*',

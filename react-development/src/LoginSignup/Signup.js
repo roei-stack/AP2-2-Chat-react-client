@@ -3,6 +3,7 @@ import DividerText from './DividerText/DividerText.js'
 import { Link, useNavigate } from 'react-router-dom';
 import SubmitBtn from './SubmitBtn/SubmitBtn';
 import { useState, useEffect } from 'react';
+import * as U from '../data/data'
 
 function Signup() {
 
@@ -18,7 +19,7 @@ function Signup() {
     if (!nickname) {
       setNickname(username)
     }
-    const response = await fetch('https://localhost:7007/api/Users/Signup', {
+    const response = await fetch(U.API_URL + '/api/Users/Signup', {
       method: 'POST',
       body: JSON.stringify({
         username: username,

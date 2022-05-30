@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import InputTextBox from './InputTextBox';
 import DividerText from './DividerText/DividerText.js'
 import SubmitBtn from './SubmitBtn/SubmitBtn';
+import * as U from '../data/data'
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -30,7 +31,7 @@ function Login() {
 
 
   const loginRemote = async () => {
-    const response = await fetch('https://localhost:7007/api/Users/Login', {
+    const response = await fetch(U.API_URL + '/api/Users/Login', {
       method: 'POST',
       headers: {
         'accept': '*/*',
