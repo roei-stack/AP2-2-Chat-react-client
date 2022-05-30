@@ -16,7 +16,7 @@ namespace Services
             new User() { Username = "shimi", Password = "a1", Nickname = "shimi"},
             new User() { Username = "bob", Password = "a1", Nickname = "bob"}
         };
-        
+
         public UserService()
         {
             foreach (User user1 in users)
@@ -34,16 +34,13 @@ namespace Services
                     }
                 }
             }
-            foreach (User user1 in users)
+            foreach (User user in users)
             {
-                foreach (User user2 in users)
+                foreach (Contact contact in user.GetContacts())
                 {
-                    if (user1.Username != user2.Username)
-                    {
-                        user2.GetContact(user1.Username).SendMessage(false, $"hello {user2.Nickname}");
-                        user2.GetContact(user1.Username).SendMessage(true, $"thanks {user1.Nickname}");
-                        user1.GetContact(user2.Username).SendMessage(false, $"thanks {user1.Nickname}");
-                    }
+                    Get(contact.id).GetContact(user.Username).SendMessage(false, $"hello {contact.id}");
+                    Get(contact.id).GetContact(user.Username).SendMessage(true, $"thanks {user.Nickname}");
+                    user.GetContact(contact.id).SendMessage(false, $"thanks {user.Nickname}");
                 }
             }
         }
