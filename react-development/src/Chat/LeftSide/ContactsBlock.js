@@ -6,6 +6,12 @@ function ContactsBlock({ img, id, last, lastdate, name, setActive }) {
         setActive(id);
     }
 
+    let date = lastdate.substr(0, 10);
+    let time = lastdate.substr(11, 5);
+    let dateAndTime = date + ' ' + time;
+    if (time === '00:00') {
+        dateAndTime = ''
+    }
     return (
         <div
             onClick={contactClicked}
@@ -20,7 +26,7 @@ function ContactsBlock({ img, id, last, lastdate, name, setActive }) {
                         {last}
                     </div>
                     <div>
-                        {lastdate}
+                        {dateAndTime}
                     </div>
                 </div>
             </div>

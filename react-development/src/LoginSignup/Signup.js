@@ -38,10 +38,14 @@ function Signup() {
   };
 
   useEffect(() => {
+    if (status === 0) {
+      return;
+    }
     if (status === 200) {
       navigate('/');
     } else {
       errors.username = "This username already exists!";
+      setStatus(0)
     }
   }, [status])
 

@@ -9,7 +9,6 @@ import { useLocation } from 'react-router-dom';
 
 function Chat() {
     const { state } = useLocation();
-
     let username = state.username;
     let password = state.password;
 
@@ -32,7 +31,6 @@ function Chat() {
         const fetchMessages = async () => {
             const response = await fetch('https://localhost:7007/api/contacts/' + username + '/' + activeContact + '/messages');
             const data = await response.json();
-            console.log(data);
             setMessages(data);
         }
         if (activeContact) {

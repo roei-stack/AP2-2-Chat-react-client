@@ -7,6 +7,10 @@ function MessageBox({ content, created, sent, id, datatype }) {
         sentBy = 'other';
     }
     const cName = "msg " + sentBy + "-msg";
+
+
+    let date = created.substr(0, 10);
+    let time = created.substr(11, 5);
     return (
         <div className={cName}>
             <p>
@@ -14,7 +18,7 @@ function MessageBox({ content, created, sent, id, datatype }) {
                 <br></br>
                 <span
                     className="time-sent">
-                    {created}
+                    {date} {time}
                 </span>
             </p>
         </div>
