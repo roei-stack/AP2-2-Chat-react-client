@@ -34,7 +34,8 @@ namespace Services
                         if (user1.GetContact(user2.Username) == null)
                         {
                             user1.AddContact(user2.Username, user2.Username, server);
-                            user1.GetContact(user2.Username).SendMessage(true, $"hello {user2.Nickname}");
+                            user1.GetContact(user2.Username)
+                                .SendMessage(true, $"hello {user2.Nickname}");
                         }
                     }
                 }
@@ -43,9 +44,12 @@ namespace Services
             {
                 foreach (Contact contact in user.GetContacts())
                 {
-                    Get(contact.id).GetContact(user.Username).SendMessage(false, $"hello {contact.id}");
-                    Get(contact.id).GetContact(user.Username).SendMessage(true, $"thanks {user.Nickname}");
-                    user.GetContact(contact.id).SendMessage(false, $"thanks {user.Nickname}");
+                    Get(contact.id).GetContact(user.Username)
+                        .SendMessage(false, $"hello {contact.id}");
+                    Get(contact.id).GetContact(user.Username)
+                        .SendMessage(true, $"thanks {user.Nickname}");
+                    user.GetContact(contact.id)
+                        .SendMessage(false, $"thanks {user.Nickname}");
                 }
             }
         }
