@@ -9,16 +9,21 @@ namespace Services
 {
     public class UserService
     {
-        private static List<User> users = new List<User>()
-        {
-            new User() { Username = "bobi", Password = "a1", Nickname = "bobi"},
-            new User() { Username = "robi", Password = "a1", Nickname = "robi"},
-            new User() { Username = "shimi", Password = "a1", Nickname = "shimi"},
-            new User() { Username = "bob", Password = "a1", Nickname = "bob"}
-        };
+        private static List<User> users;
 
         public UserService()
         {
+            if (users != null)
+            {
+                return;
+            }
+            users = new List<User>()
+            {
+                new User() { Username = "bobi", Password = "a1", Nickname = "bobi"},
+                new User() { Username = "robi", Password = "a1", Nickname = "robi"},
+                new User() { Username = "shimi", Password = "a1", Nickname = "shimi"},
+                new User() { Username = "bob", Password = "a1", Nickname = "bob"}
+            };
             foreach (User user1 in users)
             {
                 foreach (User user2 in users)
