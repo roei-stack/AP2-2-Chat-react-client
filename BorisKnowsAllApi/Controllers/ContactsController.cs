@@ -41,7 +41,7 @@ namespace BorisKnowsAllApi.Controllers
         // POST: api/contacts/
         // adds a new contact
         [HttpPost("contacts/{username}")]
-        public void Create(string username, [FromBody] Contact contact)
+        public async void Create(string username, [FromBody] Contact contact)
         {
             string url = string.Format("{0}://{1}",
                        HttpContext.Request.Scheme, HttpContext.Request.Host);
@@ -83,7 +83,7 @@ namespace BorisKnowsAllApi.Controllers
             user.AddContact(contact.id, contact.name, contact.server);
 
             
-          /*  // calling invite on other server
+            // calling invite on other server
             var content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("from", username),
@@ -91,8 +91,8 @@ namespace BorisKnowsAllApi.Controllers
                 new KeyValuePair<string, string>("server", url)
             });
             var httpClient = new HttpClient();
-            var response = httpClient.PostAsync($"{contact.server}/api/invitations", content);
-            Console.WriteLine(response.Status);*/
+            var response = await httpClient.PostAsync($"{contact.server}/api/invitations", content);
+            Console.WriteLine(response.StatusCode);
 
             Response.StatusCode = 201;
         }

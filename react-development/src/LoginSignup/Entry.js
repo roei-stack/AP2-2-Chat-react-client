@@ -23,7 +23,7 @@ function Entry() {
                 </div>
             </div>
             <div>&nbsp;&nbsp;&nbsp;
-                <a href='http://localhost:5116/' className='btn btn-primary'>Rate us</a>
+                <a href='http://localhost:5116/' className='rate btn btn-primary'>Rate us</a>
             </div>
             <Copyrights />
         </section>
