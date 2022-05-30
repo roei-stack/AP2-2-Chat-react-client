@@ -94,6 +94,7 @@ namespace BorisKnowsAllApi.Controllers
             var response = await httpClient.PostAsync($"{contact.server}/api/invitations", content);
             Console.WriteLine(response.StatusCode);
 
+
             Response.StatusCode = 201;
         }
 
