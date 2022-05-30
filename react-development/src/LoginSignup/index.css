@@ -1,0 +1,61 @@
+body {
+  margin: auto;
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background: linear-gradient(to right, #b92b27, #1565c0);
+}
+ 
+.imageParent {
+   display:flex;
+   justify-content: center;
+   align-items: center;
+   overflow: hidden;
+}
+
+.roundImg {
+  clip-path: circle();
+  width: 80%;
+  justify-content: center;
+  align-items: center;
+}
+
+.parentForm {
+  font-size: 100%;
+}
+
+.box input[type="text"], .box input[type="password"] {
+    background: white;
+    margin: auto;
+    text-align: center;
+    border: 3px solid #3498db;
+    padding: 1.75% 1.75%;
+    width: 75%;
+    border-radius: 24px;
+    transition: 0.35s;
+    font-size: 1.75vh;
+}
+
+.box input[type="text"]:focus, .box input[type="password"]:focus {
+    width: 100%;
+    border-color: #2ecc71
+}
+
+.box input[type="submit"]:hover {
+    background: #2ecc71
+}
+
+.h-custom {
+height: calc(100% - 73px);
+}
+
+@media (max-width: 450px) {
+.h-custom {
+height: 100%;
+    }
+}
+
+.rate {
+  height: 2.5%;
+  font-size: 100%;
+}
