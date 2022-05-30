@@ -10,7 +10,7 @@
 2. start `BorisKnowsAllApi` and `BorisWeb` with VS or `dotnet`
 3. Go to `react-development/src/data/data.js` and make sure `API_URL` IS EQUAL TO `BorisKnowsAllApi` base address<br>
 4. navigate to `react-development`<br>
-5. open the terminal, and type `npm install` then `npm-start`<br>
+5. open the terminal, and type `npm install` then `npm start`<br>
 
 #### How is works:
 
