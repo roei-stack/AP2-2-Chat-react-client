@@ -1,6 +1,3 @@
-import { sendMessage } from "../../data/data";
-import MediaAttacher from "./MediaAttacher";
-import Recorder from "./Recorder";
 import {useEffect, useState} from 'react'
 
 function Inputs({ username, contactId, reload }) {

@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import InputTextBox from './InputTextBox';
 import DividerText from './DividerText/DividerText.js'
 import SubmitBtn from './SubmitBtn/SubmitBtn';
-import { auth } from '../data/data'
 
 function Login() {
   const [username, setUsername] = useState("");

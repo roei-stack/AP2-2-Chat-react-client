@@ -46,60 +46,58 @@ namespace BorisKnowsAllApi.Controllers
         [HttpPost("contacts/{username}")]
         public async void Create(string username, [FromBody] Contact contact)
         {
-            string url = string.Format("{0}://{1}",
-                       HttpContext.Request.Scheme, HttpContext.Request.Host);
-            Response.StatusCode = 304;
             if (string.IsNullOrEmpty(username))
             {
                 // Please no hakk
+                Response.StatusCode = 304;
                 return;
             }
             var user = service.Get(username);
             if (user == null)
             {
                 // How the fuck did you even get here?
+                Response.StatusCode = 304;
                 return;
             }
-
             // you cant add yourself as a user
             if (username == contact.id)
             {
                 // No friends?
+                Response.StatusCode = 304;
                 return;
             }
 
-            /*
-             * contact does not have to be from this server
-            // check if contact is not a real user
-            var c = service.Get(contact.id);
-            if (c == null)
-            {
-                response.ReasonPhrase = "The contact does not exist";
-                return response;
-            }*/
-            // check if contact already exists
             if (user.GetContact(contact.id) != null)
             {
                 // This contact is already registered
+                Response.StatusCode = 304;
                 return;
             }
 
             // sending invite to other server:
             user.AddContact(contact.id, contact.name, contact.server);
-            var content = new FormUrlEncodedContent(new[]
-           {
-                new KeyValuePair<string, string>("from", username),
-                new KeyValuePair<string, string>("to", contact.id),
-                new KeyValuePair<string, string>("server", url)
-            });
-            var httpClient = new HttpClient();
-            var response = await httpClient.PostAsync($"{contact.server}/api/invitations", content);
 
-            if (response.IsSuccessStatusCode)
+            string url = string.Format("{0}://{1}", HttpContext.Request.Scheme, HttpContext.Request.Host);
+            var payload = new Dictionary<string, string>
             {
-                Response.StatusCode = 201;
+                { "from", username },
+                { "to", contact.id },
+                { "server", url}
+            };
+            var json = JsonConvert.SerializeObject(payload);
+            var postdata = new StringContent(json, Encoding.UTF8, "application/json");
+            HttpClient httpClient = new HttpClient();
+            // attempt to connect to other server
+            try
+            {
+                var response = await httpClient.PostAsync($"{contact.server}/api/invitations", postdata);
+                Console.WriteLine();
             }
-            Response.StatusCode = 304;
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Response.StatusCode = 304;
+            }
         }
 
         /******************************************************************/
@@ -122,7 +120,6 @@ namespace BorisKnowsAllApi.Controllers
             Response.StatusCode = 200;
             return user.GetContact(id);
         }
-        
         
         [HttpPut("contacts/{username}/{id}")]
         public void EditContact(string username, string id, [FromBody] Contact contact)
@@ -206,16 +203,10 @@ namespace BorisKnowsAllApi.Controllers
                 Response.StatusCode = 404;
                 return;
             }
-            Response.StatusCode = 201;
-            contact.SendMessage(true, content);
+
             // todo call transfer
-
-
             // calling invite on other server
-            string url = string.Format("{0}://{1}", HttpContext.Request.Scheme, HttpContext.Request.Host);
-
-
-            var httpClient = new HttpClient();
+            contact.SendMessage(true, content);
             var payload = new Dictionary<string, string>
             {
                 { "from", username },
@@ -224,15 +215,16 @@ namespace BorisKnowsAllApi.Controllers
             };
             var json = JsonConvert.SerializeObject(payload);
             var postdata = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync($"{contact.server}/api/transfer", postdata);
-
-
-            // payload.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            // httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
-
-            //var response = await httpClient.PostAsJsonAsync($"{contact.server}/api/transfer", payload);
-            Console.WriteLine(response.StatusCode);
-
+            HttpClient httpClient = new HttpClient();
+            // attempt to connect to other server
+            try
+            {
+                var response = await httpClient.PostAsync($"{contact.server}/api/transfer", postdata);
+            } catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Response.StatusCode = 304;
+            }
         }
 
         /******************************************************************/
@@ -289,7 +281,7 @@ namespace BorisKnowsAllApi.Controllers
         }
 
         /******************************************************************/
-        [HttpPost("intitations")]
+        [HttpPost("invitations")]
         public void Invitation([FromBody] Invitation invitation)
         {
             // we received an invite from a user in another server
