@@ -7,6 +7,7 @@ import Inputs from './RightSide/Inputs';
 import MessageList from './RightSide/MessageList';
 import { useLocation } from 'react-router-dom';
 import * as U from '../data/data'
+import { HubConnectionBuilder } from '@microsoft/signalr'
 
 function Chat() {
     const { state } = useLocation();
@@ -19,6 +20,21 @@ function Chat() {
 
     const [reload, setReload] = useState(false);
     const refresh = () => setReload(!reload);
+
+    const makeRefresh = async () => {
+        const connection = new HubConnectionBuilder().withUrl(`${U.API_URL}/chatHub`).build();
+
+        connection.on("ReceiveMessage", function () {
+            setReload(!reload);
+        });
+
+        await connection.start().then(function () {
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+
+    makeRefresh();
 
     let contactNickname = "Select a chat or add a new contact";
     let contactUsername = "";
