@@ -5,6 +5,8 @@ using Services;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
+using BorisKnowsAllApi.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,10 +17,12 @@ namespace BorisKnowsAllApi.Controllers
     public class ContactsController : ControllerBase
     {
         private readonly UserService service;
+        private readonly IHubContext<ChatHub> hub;
 
-        public ContactsController()
+        public ContactsController(IHubContext<ChatHub> hub)
         {
             this.service = new UserService();
+            this.hub = hub;
         }
         
         // GET: api/contacts/
@@ -283,7 +287,7 @@ namespace BorisKnowsAllApi.Controllers
 
         /******************************************************************/
         [HttpPost("invitations")]
-        public void Invitation([FromBody] Invitation invitation)
+        public async void Invitation([FromBody] Invitation invitation)
         {
             // we received an invite from a user in another server
             // so we will add 'from' as a contact for 'to'
@@ -305,10 +309,12 @@ namespace BorisKnowsAllApi.Controllers
             // 201 - created contact
             Response.StatusCode = 201;
             user.AddContact(invitation.from, invitation.from, invitation.server);
+
+            await this.hub.Clients.All.SendAsync("ReceiveMessage");
         }
 
         [HttpPost("transfer")]
-        public void Transfer([FromBody] Transfer transfer)
+        public async void Transfer([FromBody] Transfer transfer)
         {
             // we received a transfer from a user in another server, with a message contect
             // so we will foward the message to the destination
@@ -329,6 +335,8 @@ namespace BorisKnowsAllApi.Controllers
             // 201 - created message
             contact.SendMessage(false, transfer.content);
             Response.StatusCode = 201;
+
+            await this.hub.Clients.All.SendAsync("ReceiveMessage");
         }
     }
 }

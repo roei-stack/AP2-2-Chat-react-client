@@ -3,6 +3,29 @@ using BorisKnowsAllApi.Hubs;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSignalR();
+/*
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod()   
+            .AllowCredentials();
+    });
+});*/
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.SetIsOriginAllowed(x => true)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 
 // Add services to the container.
 
@@ -17,7 +40,7 @@ builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromDays(7);
 });
-
+/*
 builder.Services.AddCors(options => 
 {
     options.AddPolicy("Allow All",
@@ -25,7 +48,7 @@ builder.Services.AddCors(options =>
         {
             builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
         });
-});
+});*/
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
@@ -43,7 +66,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("Allow All");
+// app.UseCors("Allow All");
+app.UseCors();
 
 app.UseHttpsRedirection();
 
