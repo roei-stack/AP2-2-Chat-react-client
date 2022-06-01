@@ -11,6 +11,9 @@
 3. Go to `react-development/src/data/data.js` and make sure `API_URL` IS EQUAL TO `BorisKnowsAllApi` base address<br>
 4. navigate to `react-development`<br>
 5. open the terminal, and type `npm install` then `npm start`<br>
+### PLEASE NOTE:
+client-server communication may be blocked due to network settings, to prevent these errors navigate to the project's folder and execute 
+`dotnet dev-certs https --clean' and `dotnet dev-certs https --trust`
 
 #### How is works:
 
