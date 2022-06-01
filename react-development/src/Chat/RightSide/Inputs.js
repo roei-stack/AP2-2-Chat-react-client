@@ -1,7 +1,9 @@
 import {useEffect, useState} from 'react'
 import * as U from '../../data/data'
 
-function Inputs({ username, contactId, reload }) {
+function Inputs({ username, contactId, reload, makeRefresh }) {
+
+    makeRefresh();
 
     const [answer, setAnswer] = useState(null);
     

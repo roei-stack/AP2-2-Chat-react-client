@@ -2,7 +2,9 @@ import UserHeader from "./UserHeader";
 import ContactsBlock from "./ContactsBlock";
 import imageDefault from '../images/boris.jpg'
 
-function LeftSide({ username, contacts, reload, setActiveContact }) {
+function LeftSide({ username, contacts, reload, setActiveContact, makeRefresh }) {
+
+    makeRefresh();
 
     // generate components from list of contacts
 

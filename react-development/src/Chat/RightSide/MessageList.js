@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
 import MessageBox from './MessageBox';
 
-function MessageList({ messages }) {
+function MessageList({ messages, makeRefresh }) {
+
+    makeRefresh();
 
     // scroll down
     useEffect(() => {

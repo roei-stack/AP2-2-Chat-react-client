@@ -68,11 +68,11 @@ function Chat() {
     return (
         <section id="chat" className="container-fluid">
             <div id="chat-page" className="row g-2">
-                <LeftSide username={username} contacts={listContacts} reload={refresh} setActiveContact={setActiveContact} />
+                <LeftSide username={username} contacts={listContacts} reload={refresh} setActiveContact={setActiveContact} makeRefresh={makeRefresh} />
                 <div id="right-side" className="col-8 vh-100">
-                    <ChatHeader otherUsername={activeContact} otherNickname={contactNickname} otherImage={imageDefault} />
-                    <MessageList messages={messages} />
-                    <Inputs username={username} contactId={activeContact} reload={refresh}/>
+                    <ChatHeader otherUsername={activeContact} otherNickname={contactNickname} otherImage={imageDefault} makeRefresh={makeRefresh} />
+                    <MessageList messages={messages} makeRefresh={makeRefresh} />
+                    <Inputs username={username} contactId={activeContact} reload={refresh} makeRefresh={makeRefresh} />
                 </div>
             </div>
         </section>
