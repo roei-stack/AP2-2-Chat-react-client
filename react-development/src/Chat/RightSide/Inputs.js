@@ -12,7 +12,7 @@ function Inputs({ username, contactId, reload }) {
             return;
         }
         // sending message
-        const response = await fetch(U.API_URL + '/api/contacts/' + username + '/' + contactId + '/messages', {
+        const response = await fetch(U.API_URL + '/api/contacts/' + contactId + '/messages?username=' + username, {
             method: 'POST',
             headers: {
                 'accept': '*/*',
@@ -22,6 +22,12 @@ function Inputs({ username, contactId, reload }) {
         });
         input.value = '';
         setAnswer(response);
+    }
+
+    const keyDownEvent = (e) => {
+        if (e.key === 'Enter') {
+            sendText();
+        }
     }
 
     useEffect(() => {
@@ -36,7 +42,7 @@ function Inputs({ username, contactId, reload }) {
                     <button onClick={sendText} className="btn btn-outline-secondary" type="button" id="button-addon2">
                         <i className="bi bi-send"></i>
                     </button>
-                    <input id="text-input" className="form-control" type="text" placeholder="Write a message..." aria-label="Recipient's username" aria-describedby="button-addon2"></input>
+                    <input id="text-input" className="form-control" type="text" placeholder="Write a message..." aria-label="Recipient's username" aria-describedby="button-addon2" onKeyDown={keyDownEvent}></input>
                 </div>
             </div>
         );

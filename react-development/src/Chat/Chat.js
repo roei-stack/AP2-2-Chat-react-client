@@ -46,7 +46,7 @@ function Chat() {
     useEffect(() => {
         // update contacts list
         const fetchMessages = async () => {
-            const response = await fetch(U.API_URL + '/api/contacts/' + username + '/' + activeContact + '/messages');
+            const response = await fetch(U.API_URL + '/api/contacts/' + activeContact + '/messages?username=' + username);
             const data = await response.json();
             setMessages(data);
         }
@@ -55,9 +55,10 @@ function Chat() {
         }
     }, [activeContact, reload])
 
+    //https://localhost:7007/api/contacts/?username=bob
     useEffect(() => {
         const fetchContacts = async () => {
-            const response = await fetch(U.API_URL + '/api/contacts/' + username);
+            const response = await fetch(U.API_URL + '/api/contacts?username=' + username);
             const data = await response.json();
             setListContacts(data);
         }

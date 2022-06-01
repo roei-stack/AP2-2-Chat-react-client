@@ -3,7 +3,7 @@ import * as U from '../../data/data'
 
 function ContactAdder({ username, reload }) {
 
-    
+
     const idRef = useRef("");
     const serverRef = useRef("");
 
@@ -19,7 +19,7 @@ function ContactAdder({ username, reload }) {
             return;
         }
         // send request to server
-        const response = await fetch(U.API_URL + '/api/contacts/' + username, {
+        const response = await fetch(U.API_URL + '/api/contacts?username=' + username, {
             method: 'POST',
             headers: {
                 'accept': '*/*',
@@ -68,6 +68,8 @@ function ContactAdder({ username, reload }) {
                                     <label className="form-label">Contact's username</label>
                                     <input ref={idRef} type="text" className="form-control"></input>
                                     <label className="form-label">Contact's server</label>
+                                    <br></br>
+                                    <small>if the contact is from the same server, copy this link - </small><small className='text-primary'>{U.API_URL}</small>
                                     <input ref={serverRef} type="text" className="form-control"></input>
                                     {err}
                                 </div>
