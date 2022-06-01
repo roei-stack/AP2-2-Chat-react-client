@@ -24,10 +24,10 @@ namespace BorisKnowsAllApi.Controllers
             this.service = new UserService();
             this.hub = hub;
         }
-        
+
         // GET: api/contacts/
         // returns a list of the connected user's contacts
-        [HttpGet("contacts/{username}")]
+        [HttpGet("contacts")]
         public IEnumerable<Contact> GetAll(string username)
         {
             if (string.IsNullOrEmpty(username))
@@ -47,10 +47,9 @@ namespace BorisKnowsAllApi.Controllers
         
         // POST: api/contacts/
         // adds a new contact
-        [HttpPost("contacts/{username}")]
+        [HttpPost("contacts")]
         public async void Create(string username, [FromBody] Contact contact)
         {
-
             if (string.IsNullOrEmpty(username))
             {
                 // Please no hakk
@@ -71,7 +70,6 @@ namespace BorisKnowsAllApi.Controllers
                 Response.StatusCode = 304;
                 return;
             }
-
             if (user.GetContact(contact.id) != null)
             {
                 // This contact is already registered
@@ -80,8 +78,6 @@ namespace BorisKnowsAllApi.Controllers
             }
 
             // sending invite to other server:
-            user.AddContact(contact.id, contact.name, contact.server);
-
             string url = string.Format("{0}://{1}", HttpContext.Request.Scheme, HttpContext.Request.Host);
             var payload = new Dictionary<string, string>
             {
@@ -96,18 +92,19 @@ namespace BorisKnowsAllApi.Controllers
             try
             {
                 var response = await httpClient.PostAsync($"{contact.server}/api/invitations", postdata);
+                user.AddContact(contact.id, contact.name, contact.server);
                 Console.WriteLine();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                Response.StatusCode = 304;
             }
+            await this.hub.Clients.All.SendAsync("ReceiveMessage");
         }
 
         /******************************************************************/
         // GET api/contacts/:id
-        [HttpGet("contacts/{username}/{id}")]
+        [HttpGet("contacts/{id}")]
         public Contact GetContact(string username, string id)
         {
             var user = service.Get(username);
@@ -126,7 +123,7 @@ namespace BorisKnowsAllApi.Controllers
             return user.GetContact(id);
         }
         
-        [HttpPut("contacts/{username}/{id}")]
+        [HttpPut("contacts/{id}")]
         public void EditContact(string username, string id, [FromBody] Contact contact)
         {
             // update the contact
@@ -149,7 +146,7 @@ namespace BorisKnowsAllApi.Controllers
             Response.StatusCode = 204;
         }
 
-        [HttpDelete("contacts/{username}/{id}")]
+        [HttpDelete("contacts/{id}")]
         public void DeleteContact(string username, string id)
         {
             var user = service.Get(username);
@@ -169,7 +166,7 @@ namespace BorisKnowsAllApi.Controllers
 
         /******************************************************************/
         // GET api/contacts/:id/messages
-        [HttpGet("contacts/{username}/{id}/messages")]
+        [HttpGet("contacts/{id}/messages")]
         public IEnumerable<Message> GetContactMessages(string username, string id)
         {
             var user = service.Get(username);
@@ -190,9 +187,8 @@ namespace BorisKnowsAllApi.Controllers
             return contact.GetAllMessages();
         }
 
-
         // POST api/contacts/:id/messages
-        [HttpPost("contacts/{username}/{id}/messages")]
+        [HttpPost("contacts/{id}/messages")]
         public async void PostContactMessage(string username, string id, [FromBody] string content)
         {
             var user = service.Get(username);
@@ -225,15 +221,16 @@ namespace BorisKnowsAllApi.Controllers
             try
             {
                 var response = await httpClient.PostAsync($"{contact.server}/api/transfer", postdata);
+                Console.WriteLine();
             } catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                Response.StatusCode = 304;
             }
+            await this.hub.Clients.All.SendAsync("ReceiveMessage");
         }
 
         /******************************************************************/
-        [HttpGet("contacts/{username}/{id}/messages/{id2}")]
+        [HttpGet("contacts/{id}/messages/{id2}")]
         public Message GetMessage(string username, string id, int id2)
         {
             // return id2 message
@@ -255,7 +252,7 @@ namespace BorisKnowsAllApi.Controllers
         }
 
 
-        [HttpPut("contacts/{username}/{id}/messages/{id2}")]
+        [HttpPut("contacts/{id}/messages/{id2}")]
         public void EditMessage(string username, string id, int id2, [FromBody] string content)
         {
             // update a message
@@ -270,7 +267,7 @@ namespace BorisKnowsAllApi.Controllers
         }
 
 
-        [HttpDelete("contacts/{username}/{id}/messages/{id2}")]
+        [HttpDelete("contacts/{id}/messages/{id2}")]
         public void DeleteMessage(string username, string id, int id2)
         {
             // delete the message with that id
@@ -280,8 +277,7 @@ namespace BorisKnowsAllApi.Controllers
                 Response.StatusCode = 304;
                 return;
             }
-            service.Get(HttpContext.Session.GetString("username")).
-                GetContact(id).RemoveMessage(id2);
+            service.Get(username).GetContact(id).RemoveMessage(id2);
             Response.StatusCode = 204;
         }
 
@@ -295,7 +291,7 @@ namespace BorisKnowsAllApi.Controllers
             if (user == null)
             {
                 // 404 user not found
-                Response.StatusCode = 500;
+                Response.StatusCode = 404;
                 return;
             }
 
@@ -309,7 +305,6 @@ namespace BorisKnowsAllApi.Controllers
             // 201 - created contact
             Response.StatusCode = 201;
             user.AddContact(invitation.from, invitation.from, invitation.server);
-
             await this.hub.Clients.All.SendAsync("ReceiveMessage");
         }
 
@@ -335,7 +330,6 @@ namespace BorisKnowsAllApi.Controllers
             // 201 - created message
             contact.SendMessage(false, transfer.content);
             Response.StatusCode = 201;
-
             await this.hub.Clients.All.SendAsync("ReceiveMessage");
         }
     }
