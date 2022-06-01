@@ -18,7 +18,7 @@ client-server communication may be blocked due to network settings, to prevent t
 #### How is works:
 
 We used `javascript`, `Bootstrap`, `React`, `asp.net` <br>
-Used packetges: `react`, `react-don` `react-router-dom` `@microsoft/signalR`.<br>
+Used packetges: `react`, `react-don` `react-router-dom` `@microsoft/signalr`.<br>
 database structure:<br>
 Class `User: username, password, nickname, contacts[]`<br>
 Class `Contact: id, name, messages[]`<br>
