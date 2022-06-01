@@ -13,7 +13,7 @@
 5. open the terminal, and type `npm install` then `npm start`<br>
 ### PLEASE NOTE:
 client-server communication may be blocked due to network settings, to prevent these errors navigate to the project's folder and execute 
-`dotnet dev-certs https --clean' and `dotnet dev-certs https --trust`
+`dotnet dev-certs https --clean` and `dotnet dev-certs https --trust`
 
 #### How is works:
 
